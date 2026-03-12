@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>咖啡小劇場每月訂閱｜台北內湖自家烘焙咖啡豆</title>
+<meta name="description" content="咖啡小劇場的每月訂閱服務，適合想穩定喝到好咖啡、但不想每次重選的人。先選風味方向、份量和付款方式，剩下交給我。">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Serif+TC:wght@300;400&family=DM+Mono:wght@300&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --black: #0f0d0b;
+  --off-black: #1a1714;
+  --paper: #f0ebe0;
+  --paper-dim: #9a9080;
+  --gold: #b8965a;
+  --gold-dim: #7a6238;
+  --rule: rgba(255,255,255,0.08);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--paper);
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 300;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 100;
+  opacity: 0.8;
+}
+
+/* NAV */
+nav {
+  padding: 28px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--rule);
+}
+
+.nav-logo {
+  font-family: 'Cormorant', serif;
+  font-size: 1.1rem;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  color: var(--paper);
+  text-decoration: none;
+  opacity: 0.9;
+}
+
+.nav-back {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--paper-dim);
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+
+.nav-back:hover { color: var(--paper); }
+
+/* HERO */
+.hero {
+  padding: 80px 40px 60px;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.hero-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 28px;
+}
+
+.hero h1 {
+  font-family: 'Cormorant', serif;
+  font-size: clamp(2.4rem, 6vw, 3.6rem);
+  font-weight: 300;
+  line-height: 1.2;
+  margin-bottom: 28px;
+}
+
+.hero h1 em {
+  font-style: italic;
+  color: var(--gold);
+}
+
+.hero-body {
+  font-size: 0.95rem;
+  line-height: 1.9;
+  color: var(--paper-dim);
+  max-width: 520px;
+}
+
+.hero-body p + p { margin-top: 16px; }
+
+/* DIVIDER */
+.section-rule {
+  width: 100%;
+  height: 1px;
+  background: var(--rule);
+  margin: 60px 0;
+}
+
+/* SECTION */
+section {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.section-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  margin-bottom: 36px;
+}
+
+.section-title {
+  font-family: 'Cormorant', serif;
+  font-size: 1.65rem;
+  font-weight: 400;
+  margin-bottom: 18px;
+  line-height: 1.25;
+}
+
+.section-text {
+  font-size: 0.9rem;
+  line-height: 1.9;
+  color: var(--paper-dim);
+}
+
+/* INTRO */
+.intro {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.intro-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2px;
+  border-top: 1px solid var(--rule);
+}
+
+.intro-card {
+  padding: 28px 24px 32px 0;
+  border-right: 1px solid var(--rule);
+}
+
+.intro-card:last-child {
+  border-right: none;
+  padding-right: 0;
+}
+
+.intro-card-title {
+  font-family: 'Cormorant', serif;
+  font-size: 1.2rem;
+  font-weight: 400;
+  margin-bottom: 10px;
+}
+
+.intro-card-body {
+  font-size: 0.82rem;
+  line-height: 1.8;
+  color: var(--paper-dim);
+}
+
+/* STEP 1 — 選豆方向 */
+.flavor-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2px;
+}
+
+.flavor-card {
+  border: 1px solid var(--rule);
+  padding: 28px 32px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  position: relative;
+}
+
+.flavor-card:hover {
+  border-color: var(--gold-dim);
+  background: rgba(184, 150, 90, 0.03);
+}
+
+.flavor-card.selected {
+  border-color: var(--gold);
+  background: rgba(184, 150, 90, 0.05);
+}
+
+.flavor-card.selected::after {
+  content: '✓';
+  position: absolute;
+  right: 28px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--gold);
+}
+
+.flavor-name {
+  font-family: 'Cormorant', serif;
+  font-size: 1.3rem;
+  font-weight: 400;
+  margin-bottom: 8px;
+}
+
+.flavor-desc {
+  font-size: 0.82rem;
+  color: var(--paper-dim);
+  line-height: 1.7;
+}
+
+/* STEP 2 — 選方案 */
+.plan-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+}
+
+@media (max-width: 520px) {
+  .plan-grid { grid-template-columns: 1fr; }
+}
+
+.plan-card {
+  border: 1px solid var(--rule);
+  padding: 32px 28px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  position: relative;
+}
+
+.plan-card:hover {
+  border-color: var(--gold-dim);
+  background: rgba(184, 150, 90, 0.03);
+}
+
+.plan-card.selected {
+  border-color: var(--gold);
+  background: rgba(184, 150, 90, 0.05);
+}
+
+.plan-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 16px;
+  display: block;
+}
+
+.plan-quantity {
+  font-family: 'Cormorant', serif;
+  font-size: 2rem;
+  font-weight: 300;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.plan-quantity span {
+  font-size: 0.9rem;
+  color: var(--paper-dim);
+}
+
+.plan-price {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--paper-dim);
+  margin-top: 16px;
+  line-height: 1.8;
+}
+
+.plan-price strong {
+  color: var(--paper);
+  font-weight: 300;
+}
+
+.plan-discount {
+  display: inline-block;
+  margin-top: 10px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold);
+  border: 1px solid var(--gold-dim);
+  padding: 3px 8px;
+}
+
+/* STEP 3 — 付款週期 */
+.billing-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+}
+
+@media (max-width: 520px) {
+  .billing-grid { grid-template-columns: 1fr; }
+}
+
+.billing-card {
+  border: 1px solid var(--rule);
+  padding: 28px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  position: relative;
+}
+
+.billing-card:hover {
+  border-color: var(--gold-dim);
+  background: rgba(184, 150, 90, 0.03);
+}
+
+.billing-card.selected {
+  border-color: var(--gold);
+  background: rgba(184, 150, 90, 0.05);
+}
+
+.billing-title {
+  font-family: 'Cormorant', serif;
+  font-size: 1.2rem;
+  font-weight: 400;
+  margin-bottom: 8px;
+}
+
+.billing-desc {
+  font-size: 0.8rem;
+  color: var(--paper-dim);
+  line-height: 1.7;
+}
+
+.billing-gift {
+  margin-top: 14px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold);
+  border: 1px solid var(--gold-dim);
+  padding: 3px 8px;
+  display: inline-block;
+}
+
+/* SUMMARY */
+.summary-box {
+  border: 1px solid var(--rule);
+  padding: 36px 32px;
+  margin-top: 48px;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.4s, transform 0.4s;
+}
+
+.summary-box.visible {
+  opacity: 1;
+  transform: none;
+}
+
+.summary-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: 0.85rem;
+}
+
+.summary-line:last-of-type { border-bottom: none; }
+
+.summary-line .label { color: var(--paper-dim); }
+
+.summary-line .value {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.8rem;
+}
+
+.summary-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-top: 20px;
+  margin-top: 4px;
+}
+
+.summary-total .label {
+  font-family: 'Cormorant', serif;
+  font-size: 1.1rem;
+}
+
+.summary-total .value {
+  font-family: 'Cormorant', serif;
+  font-size: 1.8rem;
+  font-weight: 300;
+  color: var(--gold);
+}
+
+/* CTA */
+.cta-area {
+  margin-top: 40px;
+  padding-bottom: 100px;
+}
+
+.cta-note {
+  font-size: 0.78rem;
+  color: var(--paper-dim);
+  line-height: 1.8;
+  margin-bottom: 28px;
+}
+
+.cta-btn {
+  display: block;
+  width: 100%;
+  padding: 20px 32px;
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--paper);
+  font-family: 'Cormorant', serif;
+  font-size: 1.1rem;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.cta-btn.ready {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.cta-btn:hover {
+  background: var(--gold);
+  color: var(--black);
+}
+
+.cta-btn:disabled {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* RULES */
+.rules {
+  margin-top: 64px;
+  padding: 0 40px 80px;
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.rules-title {
+  font-family: 'Cormorant', serif;
+  font-size: 1rem;
+  font-weight: 400;
+  margin-bottom: 20px;
+  color: var(--paper-dim);
+}
+
+.rules-list {
+  list-style: none;
+}
+
+.rules-list li {
+  font-size: 0.8rem;
+  color: var(--paper-dim);
+  line-height: 1.8;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  gap: 16px;
+}
+
+.rules-list li::before {
+  content: '—';
+  color: var(--gold-dim);
+  flex-shrink: 0;
+  font-family: 'DM Mono', monospace;
+}
+
+/* FAQ */
+.faq {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 40px 100px;
+}
+
+.faq-list {
+  border-top: 1px solid var(--rule);
+}
+
+.faq-item {
+  padding: 24px 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.faq-question {
+  font-family: 'Cormorant', serif;
+  font-size: 1.2rem;
+  font-weight: 400;
+  margin-bottom: 10px;
+}
+
+.faq-answer {
+  font-size: 0.82rem;
+  line-height: 1.85;
+  color: var(--paper-dim);
+}
+
+/* STEP HEADER */
+.step-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.step-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--gold-dim);
+  letter-spacing: 0.1em;
+  flex-shrink: 0;
+}
+
+.step-title {
+  font-family: 'Cormorant', serif;
+  font-size: 1.3rem;
+  font-weight: 400;
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  nav { padding: 24px 24px; }
+  .hero { padding: 60px 24px 40px; }
+  section { padding: 0 24px; }
+  .intro { padding: 0 24px; }
+  .intro-grid { grid-template-columns: 1fr; }
+  .intro-card { padding: 24px 0; border-right: none; border-bottom: 1px solid var(--rule); }
+  .rules { padding: 0 24px 80px; }
+  .faq { padding: 0 24px 80px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">咖啡小劇場</a>
+  <a href="index.html" class="nav-back">← 回首頁</a>
+</nav>
+
+<div class="hero">
+  <p class="hero-eyebrow">每月選豆 Monthly</p>
+  <h1>把喝咖啡這件事<br>固定下來，<br><em>之後就不用重選</em>。</h1>
+  <div class="hero-body">
+    <p>這是給想穩定喝到好咖啡、但不想每次重新做功課的人。</p>
+    <p>你先選喜歡的方向、每月份量和付款方式，剩下的選豆與烘焙判斷交給我。每月烘好後，我會主動通知你。</p>
+  </div>
+</div>
+
+<div class="section-rule"></div>
+
+<div class="intro">
+  <div class="section-label">Who It Is For</div>
+  <h2 class="section-title">這個服務，適合這三種人</h2>
+  <p class="section-text" style="margin-bottom: 40px;">如果是 Coco Chanel 在還沒有資本的時候做服務，她不會用複雜方案掩飾不確定，而會讓真正需要的人一眼知道這是不是給自己的。這頁也應該這樣。</p>
+  <div class="intro-grid">
+    <div class="intro-card">
+      <h3 class="intro-card-title">每天都會喝咖啡的人</h3>
+      <p class="intro-card-body">你不需要每次重新研究，只需要穩定地收到適合自己、品質可靠的豆子。</p>
+    </div>
+    <div class="intro-card">
+      <h3 class="intro-card-title">喝過好咖啡的人</h3>
+      <p class="intro-card-body">你不一定還在研究產地和處理法，但已經知道咖啡有好壞之分，不想將就。</p>
+    </div>
+    <div class="intro-card">
+      <h3 class="intro-card-title">忙，不想一直重選的人</h3>
+      <p class="intro-card-body">你可以把方向交代清楚，之後把這件事從待辦清單拿掉。</p>
+    </div>
+  </div>
+</div>
+
+<div class="section-rule"></div>
+
+<!-- STEP 1 -->
+<section>
+  <div class="step-header">
+    <span class="step-num">01</span>
+    <h2 class="step-title">選一個方向</h2>
+  </div>
+  <div class="flavor-grid">
+    <div class="flavor-card" data-flavor="floral" onclick="selectFlavor(this)">
+      <div class="flavor-name">細緻淡雅</div>
+      <div class="flavor-desc">花香、柑橘、清透的果酸。經典水洗處理，淺焙。<br>適合習慣喝手沖的人。</div>
+    </div>
+    <div class="flavor-card" data-flavor="natural" onclick="selectFlavor(this)">
+      <div class="flavor-name">果乾與酒香</div>
+      <div class="flavor-desc">莓果、熱帶水果、發酵的甜。厭氧或特殊後製，淺至中焙。<br>適合喜歡有個性的豆子的人。</div>
+    </div>
+    <div class="flavor-card" data-flavor="dark" onclick="selectFlavor(this)">
+      <div class="flavor-name">濃郁苦甜</div>
+      <div class="flavor-desc">黑巧克力、焦糖、厚實的body。深烘焙。<br>適合加奶、或習慣深烘的人。</div>
+    </div>
+  </div>
+  <p style="font-size:0.78rem; color: var(--paper-dim); margin-top: 16px; line-height: 1.8;">選的是你喜歡的大方向，不是要你先精確知道每一支豆子的細節。</p>
+</section>
+
+<div class="section-rule"></div>
+
+<!-- STEP 2 -->
+<section>
+  <div class="step-header">
+    <span class="step-num">02</span>
+    <h2 class="step-title">選一個份量</h2>
+  </div>
+  <div class="plan-grid">
+    <div class="plan-card" data-plan="2" onclick="selectPlan(this)">
+      <span class="plan-badge">基本</span>
+      <div class="plan-quantity">2 <span>包 / 月</span></div>
+      <div class="plan-price">
+        每包半磅，依當月豆款定價計算<br>
+        <strong>無折扣</strong>
+      </div>
+    </div>
+    <div class="plan-card" data-plan="3" onclick="selectPlan(this)">
+      <span class="plan-badge">推薦</span>
+      <div class="plan-quantity">3 <span>包 / 月</span></div>
+      <div class="plan-price">
+        每包半磅，前兩包正常定價<br>
+        <strong>第三包九折</strong>
+      </div>
+      <span class="plan-discount">第三包 10% off</span>
+    </div>
+  </div>
+  <p style="font-size:0.75rem; color: var(--paper-dim); margin-top: 16px; padding-left: 2px; line-height: 1.8;">需要四包以上？可以同時訂兩份兩包方案。</p>
+</section>
+
+<div class="section-rule"></div>
+
+<!-- STEP 3 -->
+<section>
+  <div class="step-header">
+    <span class="step-num">03</span>
+    <h2 class="step-title">選一個付款方式</h2>
+  </div>
+  <div class="billing-grid">
+    <div class="billing-card" data-billing="monthly" onclick="selectBilling(this)">
+      <div class="billing-title">每月付款</div>
+      <div class="billing-desc">烘好之後通知你，確認後付款取豆。隨時可以暫停或結束。</div>
+    </div>
+    <div class="billing-card" data-billing="yearly" onclick="selectBilling(this)">
+      <div class="billing-title">預付一年</div>
+      <div class="billing-desc">一次付清十一個月，第十二個月由劇場回禮。適合已經知道自己會長期喝的人。</div>
+      <span class="billing-gift">多送一個月</span>
+    </div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="summary-box" id="summaryBox">
+    <div id="summaryLines"></div>
+    <div class="summary-total">
+      <span class="label">每月費用約</span>
+      <span class="value" id="summaryTotal">—</span>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-area">
+    <p class="cta-note">確認後會先幫你複製一段訊息，再打開 LINE。你只要貼上送出，我收到後會回覆確認，並告訴你下次烘豆與取豆方式。</p>
+    <a href="#" class="cta-btn" id="ctaBtn" onclick="sendToLine(event)">確認，複製並前往 LINE →</a>
+  </div>
+</section>
+
+<!-- RULES -->
+<div class="rules">
+  <p class="rules-title">關於這個服務</p>
+  <ul class="rules-list">
+    <li>每月烘好之後我會主動通知你，不是你來催我。</li>
+    <li>豆子種類依當月庫存和我的判斷決定，方向由你選，細節由我來。</li>
+    <li>沒有最低訂閱期，每月付款的客人隨時可以暫停。</li>
+    <li>預付年份的客人，如果中途不想繼續，剩餘金額以豆子折抵。</li>
+    <li>取豆方式：來店自取，或每月固定時間安排配送（詳情確認時討論）。</li>
+  </ul>
+</div>
+
+<div class="faq">
+  <div class="section-label">FAQ</div>
+  <h2 class="section-title">送出前，你可能還會想確認這些</h2>
+  <div class="faq-list">
+    <div class="faq-item">
+      <h3 class="faq-question">如果我是第一次買，會不會太早直接訂閱？</h3>
+      <p class="faq-answer">如果你只是想先試一次，也可以先去商店單次購買。訂閱比較適合已經知道自己會固定喝，或不想每次重選的人。</p>
+    </div>
+    <div class="faq-item">
+      <h3 class="faq-question">我不會描述風味，怎麼辦？</h3>
+      <p class="faq-answer">沒關係。你只要告訴我平常喝黑咖啡或加奶、喜歡清爽還是厚一點，我就能幫你判斷方向。</p>
+    </div>
+    <div class="faq-item">
+      <h3 class="faq-question">每個月收到的會完全一樣嗎？</h3>
+      <p class="faq-answer">不一定。方向會盡量維持一致，但實際豆款會依當月狀態與庫存調整。你買的是穩定的判斷，不是固定的 SKU。</p>
+    </div>
+    <div class="faq-item">
+      <h3 class="faq-question">如果我之後想改方向或包數呢？</h3>
+      <p class="faq-answer">可以。每月付款方案最有彈性；預付年份方案如果想調整，也可以先和我討論最合適的做法。</p>
+    </div>
+  </div>
+</div>
+
+<script>
+let state = { flavor: null, plan: null, billing: null };
+
+// Price ranges by flavor (approximate, shown in summary)
+const flavorNames = {
+  floral: '細緻淡雅',
+  natural: '果乾與酒香',
+  dark: '濃郁苦甜'
+};
+
+const planNames = { '2': '兩包 / 月', '3': '三包 / 月' };
+const billingNames = { monthly: '每月付款', yearly: '預付一年（多送一個月）' };
+
+function selectFlavor(el) {
+  document.querySelectorAll('.flavor-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  state.flavor = el.dataset.flavor;
+  updateSummary();
+}
+
+function selectPlan(el) {
+  document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  state.plan = el.dataset.plan;
+  updateSummary();
+}
+
+function selectBilling(el) {
+  document.querySelectorAll('.billing-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  state.billing = el.dataset.billing;
+  updateSummary();
+}
+
+function updateSummary() {
+  const box = document.getElementById('summaryBox');
+  const linesEl = document.getElementById('summaryLines');
+  const totalEl = document.getElementById('summaryTotal');
+  const btn = document.getElementById('ctaBtn');
+
+  if (!state.flavor && !state.plan && !state.billing) return;
+
+  box.classList.add('visible');
+
+  let lines = [];
+  if (state.flavor) lines.push({ label: '風味方向', value: flavorNames[state.flavor] });
+  if (state.plan) lines.push({ label: '每月包數', value: planNames[state.plan] });
+  if (state.billing) lines.push({ label: '付款方式', value: billingNames[state.billing] });
+
+  linesEl.innerHTML = lines.map(l => `
+    <div class="summary-line">
+      <span class="label">${l.label}</span>
+      <span class="value">${l.value}</span>
+    </div>
+  `).join('');
+
+  // Show total note based on plan
+  if (state.plan === '2') {
+    totalEl.textContent = '豆款定價 × 2';
+  } else if (state.plan === '3') {
+    totalEl.textContent = '豆款定價 × 2 + 九折';
+  } else {
+    totalEl.textContent = '—';
+  }
+
+  // Enable CTA only when all three selected
+  if (state.flavor && state.plan && state.billing) {
+    btn.classList.add('ready');
+  }
+}
+
+function sendToLine(e) {
+  e.preventDefault();
+  if (!state.flavor || !state.plan || !state.billing) return;
+
+  const plainMessage =
+    `你好，我想訂閱咖啡小劇場的每月選豆服務：\n` +
+    `風味方向：${flavorNames[state.flavor]}\n` +
+    `每月包數：${planNames[state.plan]}\n` +
+    `付款方式：${billingNames[state.billing]}\n` +
+    `取豆方式：再和你確認`;
+
+  const msg = encodeURIComponent(plainMessage);
+
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(plainMessage).catch(() => {});
+  }
+
+  // LINE share text scheme
+  const lineUrl = `https://line.me/R/msg/text/?${msg}`;
+  window.open(lineUrl, '_blank');
+
+  setTimeout(() => {
+    alert('已幫你準備好訊息並打開 LINE。如果沒有自動帶入文字，可以直接貼上剛剛複製的內容傳送。');
+  }, 300);
+}
+</script>
+</body>
+</html>
