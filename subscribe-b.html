@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>每月選豆 — 咖啡小劇場</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Noto+Serif+TC:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #f8f4ee; --ink: #16120e; --ink-mid: #4a4540; --ink-dim: #9a9288;
+  --rule: #e0dbd2; --rule-dark: #c8c3ba; --accent: #8a6830;
+  --selected: #16120e; --sel-text: #f8f4ee;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--ink); font-family: 'Noto Serif TC', serif; font-weight: 300; line-height: 1.8; min-height: 100vh; }
+nav { padding: 32px 60px; display: flex; justify-content: space-between; align-items: center; }
+.nav-logo { font-family: 'Noto Serif TC', serif; font-weight: 400; font-size: 0.9rem; letter-spacing: 0.12em; color: var(--ink); text-decoration: none; }
+.nav-back { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.1em; color: var(--ink-dim); text-decoration: none; text-transform: uppercase; transition: color 0.2s; }
+.nav-back:hover { color: var(--ink); }
+.full-rule { height: 1px; background: var(--ink); margin: 0 60px; }
+.page { max-width: 700px; margin: 0 auto; padding: 0 60px 120px; }
+.hero { padding: 100px 0 80px; }
+.hero-number { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-dim); margin-bottom: 48px; }
+.hero-headline { font-family: 'Playfair Display', serif; font-size: clamp(2.6rem, 7vw, 4rem); font-weight: 400; line-height: 1.12; color: var(--ink); margin-bottom: 48px; letter-spacing: -0.01em; }
+.hero-headline em { font-style: italic; }
+.hero-divider { width: 48px; height: 1px; background: var(--accent); margin-bottom: 36px; }
+.hero-body { font-size: 1rem; line-height: 1.9; color: var(--ink-mid); max-width: 440px; }
+.hero-body p + p { margin-top: 14px; }
+.section { padding: 64px 0; border-top: 1px solid var(--rule); }
+.section-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 44px; }
+.section-title { font-family: 'Noto Serif TC', serif; font-weight: 400; font-size: 0.95rem; letter-spacing: 0.06em; color: var(--ink); }
+.section-index { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.15em; color: var(--ink-dim); text-transform: uppercase; }
+.options { display: flex; flex-direction: column; gap: 1px; background: var(--rule-dark); }
+.opt { background: var(--bg); padding: 28px 32px; cursor: pointer; display: grid; grid-template-columns: 1fr auto; gap: 20px; align-items: start; transition: background 0.15s; }
+.opt:hover { background: #f2ede5; }
+.opt.selected { background: var(--selected); color: var(--sel-text); }
+.opt-name { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 400; margin-bottom: 8px; color: inherit; line-height: 1.3; }
+.opt-desc { font-size: 0.82rem; line-height: 1.75; color: var(--ink-mid); transition: color 0.15s; }
+.opt.selected .opt-desc { color: rgba(248,244,238,0.6); }
+.opt-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; padding-top: 4px; }
+.opt-marker { width: 18px; height: 18px; border: 1px solid var(--rule-dark); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.opt-marker-inner { width: 8px; height: 8px; background: transparent; transition: background 0.15s; }
+.opt.selected .opt-marker-inner { background: var(--sel-text); }
+.opt-tag { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); white-space: nowrap; }
+.opt.selected .opt-tag { color: rgba(248,244,238,0.5); }
+.fn { margin-top: 16px; font-size: 0.78rem; color: var(--ink-dim); line-height: 1.75; }
+.summary-wrap { padding: 64px 0; border-top: 1px solid var(--rule); display: none; }
+.summary-wrap.visible { display: block; }
+.summary-label { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-dim); margin-bottom: 32px; }
+.s-row { display: flex; justify-content: space-between; align-items: baseline; padding: 13px 0; border-bottom: 1px solid var(--rule); font-size: 0.88rem; }
+.s-row .lbl { color: var(--ink-mid); }
+.s-row .val { font-family: 'DM Mono', monospace; font-size: 0.78rem; color: var(--ink); }
+.s-total { display: flex; justify-content: space-between; align-items: baseline; padding-top: 28px; margin-bottom: 48px; }
+.s-total .lbl { font-size: 0.88rem; color: var(--ink-mid); }
+.s-total .val { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-style: italic; color: var(--ink); }
+.cta-note { font-size: 0.8rem; color: var(--ink-dim); line-height: 1.85; max-width: 420px; margin-bottom: 28px; }
+.cta-btn { display: block; width: 100%; padding: 18px 48px; background: var(--ink); color: var(--bg); font-family: 'Noto Serif TC', serif; font-weight: 400; font-size: 0.9rem; letter-spacing: 0.08em; text-decoration: none; cursor: pointer; border: none; text-align: center; transition: background 0.15s, opacity 0.2s; opacity: 0; pointer-events: none; }
+.cta-btn.ready { opacity: 1; pointer-events: auto; }
+.cta-btn:hover { background: #2a2420; }
+.terms { padding: 64px 0 0; border-top: 1px solid var(--rule); }
+.terms-label { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-dim); margin-bottom: 28px; }
+.terms-list { list-style: none; }
+.terms-list li { font-size: 0.82rem; color: var(--ink-mid); line-height: 1.8; padding: 11px 0; border-bottom: 1px solid var(--rule); display: grid; grid-template-columns: 8px 1fr; gap: 20px; align-items: start; }
+.terms-list li::before { content: ''; width: 4px; height: 4px; background: var(--rule-dark); border-radius: 50%; margin-top: 9px; }
+@media (max-width: 600px) {
+  nav { padding: 24px 24px; } .full-rule { margin: 0 24px; }
+  .page { padding: 0 24px 80px; } .hero { padding: 64px 0 56px; }
+  .opt { padding: 22px 20px; }
+}
+</style>
+</head>
+<body>
+<nav>
+  <a href="https://theatre.1shop.tw/" class="nav-logo">咖啡小劇場</a>
+  <a href="https://theatre.1shop.tw/" class="nav-back">← 回首頁</a>
+</nav>
+<div class="full-rule"></div>
+<div class="page">
+  <div class="hero">
+    <p class="hero-number">每月選豆 &nbsp;—&nbsp; Monthly Subscription</p>
+    <h1 class="hero-headline">不需要懂咖啡。<br>只需要<em>一個決定</em>。</h1>
+    <div class="hero-divider"></div>
+    <div class="hero-body">
+      <p>每個月烘好之後我通知你。你來取，或我送過去。不需要研究，不需要比較。</p>
+      <p>你選方向，我選豆子。這件事，做一次就夠了。</p>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-head">
+      <h2 class="section-title">風味方向</h2>
+      <span class="section-index">Step 01 / 03</span>
+    </div>
+    <div class="options">
+      <div class="opt" data-flavor="floral" onclick="selectFlavor(this)">
+        <div class="opt-left">
+          <div class="opt-name">細緻淡雅</div>
+          <div class="opt-desc">花香、柑橘、清透的果酸。經典水洗處理，淺焙。喝手沖習慣了的人。</div>
+        </div>
+        <div class="opt-right"><div class="opt-marker"><div class="opt-marker-inner"></div></div></div>
+      </div>
+      <div class="opt" data-flavor="natural" onclick="selectFlavor(this)">
+        <div class="opt-left">
+          <div class="opt-name">果乾與酒香</div>
+          <div class="opt-desc">莓果、熱帶水果、發酵的甜。厭氧或特殊後製，淺至中焙。喜歡有個性的豆子的人。</div>
+        </div>
+        <div class="opt-right"><div class="opt-marker"><div class="opt-marker-inner"></div></div></div>
+      </div>
+      <div class="opt" data-flavor="dark" onclick="selectFlavor(this)">
+        <div class="opt-left">
+          <div class="opt-name">濃郁苦甜</div>
+          <div class="opt-desc">黑巧克力、焦糖、厚實的 body。深烘焙。加奶、或長期習慣深烘的人。</div>
+        </div>
+        <div class="opt-right"><div class="opt-marker"><div class="opt-marker-inner"></div></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-head">
+      <h2 class="section-title">每月包數</h2>
+      <span class="section-index">Step 02 / 03</span>
+    </div>
+    <div class="options">
+      <div class="opt" data-plan="2" onclick="selectPlan(this)">
+        <div class="opt-left">
+          <div class="opt-name">兩包 / 月</div>
+          <div class="opt-desc">依當月豆款定價計算，無折扣。</div>
+        </div>
+        <div class="opt-right"><div class="opt-marker"><div class="opt-marker-inner"></div></div></div>
+      </div>
+      <div class="opt" data-plan="3" onclick="selectPlan(this)">
+        <div class="opt-left">
+          <div class="opt-name">三包 / 月</div>
+          <div class="opt-desc">前兩包正常定價，第三包九折。</div>
+          <div class="opt-tag" style="margin-top:10px;">第三包 10% off</div>
+        </div>
+        <div class="opt-right"><div class="opt-marker"><div class="opt-marker-inner"></div></div></div>
+      </div>
+    </div>
+    <p class="fn">需要四包以上，可同時送出兩份兩包訂單。</p>
+  </div>
+  <div class="section">
+    <div class="section-head">
+      <h2 class="section-title">付款方式</h2>
+      <span class="section-index">Step 03 / 03</span>
+    </div>
+    <div class="options">
+      <div class="opt" data-billing="monthly" onclick="selectBilling(this)">
+        <div class="opt-left">
+          <div class="opt-name">每月付款</div>
+          <div class="opt-desc">烘好通知後付款取豆。隨時可暫停或結束，無最低期數。</div>
+        </div>
+        <div class="opt-right"><div class="opt-marker"><div class="opt-marker-inner"></div></div></div>
+      </div>
+      <div class="opt" data-billing="yearly" onclick="selectBilling(this)">
+        <div class="opt-left">
+          <div class="opt-name">預付一年</div>
+          <div class="opt-desc">付十一個月的錢，第十二個月由劇場招待。</div>
+          <div class="opt-tag" style="margin-top:10px;">多送一個月</div>
+        </div>
+        <div class="opt-right"><div class="opt-marker"><div class="opt-marker-inner"></div></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="summary-wrap" id="summaryBox">
+    <p class="summary-label">確認選擇</p>
+    <div id="summaryRows"></div>
+    <div class="s-total">
+      <span class="lbl">每月費用</span>
+      <span class="val" id="summaryTotal">—</span>
+    </div>
+    <p class="cta-note">確認後跳轉 LINE，系統自動帶入你的選擇。我收到後回覆確認，並告訴你下次烘豆時間。</p>
+    <a href="#" class="cta-btn" id="ctaBtn" onclick="sendToLine(event)">確認，傳送到 LINE</a>
+  </div>
+  <div class="terms">
+    <p class="terms-label">服務說明</p>
+    <ul class="terms-list">
+      <li>每月烘好之後我主動通知你，不是你來催我。</li>
+      <li>豆子種類依當月庫存和我的判斷決定，方向由你選，細節由我來。</li>
+      <li>沒有最低訂閱期，每月付款隨時可以暫停。</li>
+      <li>預付年份如中途不想繼續，剩餘金額以豆子折抵。</li>
+      <li>取豆方式：來店自取，或每月固定安排配送（確認時討論）。</li>
+    </ul>
+  </div>
+</div>
+<script>
+const state = { flavor: null, plan: null, billing: null };
+const flavorNames  = { floral: '細緻淡雅', natural: '果乾與酒香', dark: '濃郁苦甜' };
+const planNames    = { '2': '兩包 / 月', '3': '三包 / 月' };
+const billingNames = { monthly: '每月付款', yearly: '預付一年（多送一個月）' };
+function selectFlavor(el) { document.querySelectorAll('[data-flavor]').forEach(c=>c.classList.remove('selected')); el.classList.add('selected'); state.flavor=el.dataset.flavor; update(); }
+function selectPlan(el) { document.querySelectorAll('[data-plan]').forEach(c=>c.classList.remove('selected')); el.classList.add('selected'); state.plan=el.dataset.plan; update(); }
+function selectBilling(el) { document.querySelectorAll('[data-billing]').forEach(c=>c.classList.remove('selected')); el.classList.add('selected'); state.billing=el.dataset.billing; update(); }
+function update() {
+  const box=document.getElementById('summaryBox'), rows=document.getElementById('summaryRows'), total=document.getElementById('summaryTotal'), btn=document.getElementById('ctaBtn');
+  box.classList.toggle('visible',!!(state.flavor||state.plan||state.billing));
+  const lines=[];
+  if(state.flavor) lines.push({label:'風味方向',val:flavorNames[state.flavor]});
+  if(state.plan) lines.push({label:'每月包數',val:planNames[state.plan]});
+  if(state.billing) lines.push({label:'付款方式',val:billingNames[state.billing]});
+  rows.innerHTML=lines.map(l=>`<div class="s-row"><span class="lbl">${l.label}</span><span class="val">${l.val}</span></div>`).join('');
+  total.textContent=state.plan==='2'?'豆款定價 × 2':state.plan==='3'?'豆款定價 × 2 + 九折':'—';
+  btn.classList.toggle('ready',!!(state.flavor&&state.plan&&state.billing));
+}
+function sendToLine(e) {
+  e.preventDefault();
+  if(!state.flavor||!state.plan||!state.billing) return;
+  const msg=encodeURIComponent(`你好，我想訂閱每月選豆服務：\n風味方向：${flavorNames[state.flavor]}\n每月包數：${planNames[state.plan]}\n付款方式：${billingNames[state.billing]}`);
+  window.open(`https://line.me/ti/p/~norman1881?${msg}`,'_blank');
+}
+</script>
+</body>
+</html>

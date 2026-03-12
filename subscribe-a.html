@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>每月選豆 — 咖啡小劇場</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Serif+TC:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg:       #f5f2ec;
+  --bg-alt:   #edeae2;
+  --ink:      #1a1714;
+  --ink-mid:  #4a4540;
+  --ink-dim:  #8a8278;
+  --rule:     #d0ccc4;
+  --accent:   #2a2420;
+  --gold:     #8a6830;
+  --selected-bg: #1a1714;
+  --selected-text: #f5f2ec;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+/* NAV */
+nav {
+  background: var(--bg);
+  border-bottom: 2px solid var(--ink);
+  padding: 0 40px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.nav-logo {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 500;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.nav-back {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-dim);
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 0.15s;
+}
+
+.nav-back:hover { color: var(--ink); }
+
+/* LAYOUT */
+.page {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 32px 80px;
+}
+
+/* HERO */
+.hero {
+  padding: 56px 0 48px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.hero-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 20px;
+}
+
+.hero-headline {
+  font-family: 'Cormorant', serif;
+  font-size: clamp(2rem, 7vw, 3rem);
+  font-weight: 300;
+  line-height: 1.18;
+  color: var(--ink);
+  margin-bottom: 20px;
+}
+
+.hero-headline em {
+  font-style: italic;
+}
+
+.hero-sub {
+  font-size: 1rem;
+  line-height: 1.85;
+  color: var(--ink-mid);
+  max-width: 480px;
+}
+
+.hero-sub p + p { margin-top: 12px; }
+
+/* STEP */
+.step {
+  padding: 44px 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.step-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.step-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--ink-dim);
+  letter-spacing: 0.12em;
+  flex-shrink: 0;
+}
+
+.step-title {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 500;
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+}
+
+/* OPTION ROWS */
+.option-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid var(--rule);
+}
+
+.option {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  padding: 20px 24px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--rule);
+  transition: background 0.12s;
+  position: relative;
+  background: var(--bg);
+}
+
+.option:last-child { border-bottom: none; }
+
+.option:hover { background: var(--bg-alt); }
+
+.option.selected {
+  background: var(--selected-bg);
+  color: var(--selected-text);
+}
+
+.option-check {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 2px;
+  margin-right: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.12s, background 0.12s;
+}
+
+.option.selected .option-check {
+  background: var(--bg);
+  border-color: var(--bg);
+}
+
+.option-check::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: transparent;
+  transition: background 0.12s;
+}
+
+.option.selected .option-check::after {
+  background: var(--selected-bg);
+}
+
+.option-body { flex: 1; }
+
+.option-name {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 500;
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+  color: inherit;
+}
+
+.option-desc {
+  font-size: 0.82rem;
+  line-height: 1.7;
+  color: var(--ink-mid);
+}
+
+.option.selected .option-desc {
+  color: rgba(245,242,236,0.65);
+}
+
+.option-aside {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--ink-dim);
+  margin-left: 16px;
+  margin-top: 3px;
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.option.selected .option-aside {
+  color: rgba(245,242,236,0.5);
+}
+
+.option-badge {
+  display: inline-block;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 1px solid currentColor;
+  padding: 2px 7px;
+  margin-top: 8px;
+  opacity: 0.7;
+}
+
+/* FOOTNOTE */
+.footnote {
+  font-size: 0.78rem;
+  color: var(--ink-dim);
+  margin-top: 12px;
+  line-height: 1.7;
+  padding-left: 2px;
+}
+
+/* SUMMARY */
+.summary {
+  margin-top: 44px;
+  padding: 44px 0;
+  border-top: 2px solid var(--ink);
+  display: none;
+}
+
+.summary.visible { display: block; }
+
+.summary-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 24px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: 0.88rem;
+}
+
+.summary-row .label { color: var(--ink-mid); }
+
+.summary-row .val {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--ink);
+  text-align: right;
+}
+
+.summary-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-top: 20px;
+  margin-top: 4px;
+}
+
+.summary-total .label {
+  font-size: 0.88rem;
+  color: var(--ink-mid);
+}
+
+.summary-total .val {
+  font-family: 'Cormorant', serif;
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: var(--ink);
+}
+
+/* CTA */
+.cta-wrap {
+  margin-top: 32px;
+}
+
+.cta-note {
+  font-size: 0.8rem;
+  color: var(--ink-dim);
+  line-height: 1.8;
+  margin-bottom: 20px;
+}
+
+.cta-btn {
+  display: block;
+  width: 100%;
+  padding: 18px 28px;
+  background: var(--ink);
+  border: none;
+  color: var(--bg);
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 400;
+  font-size: 0.95rem;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: background 0.15s, opacity 0.2s;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.cta-btn.ready {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.cta-btn:hover { background: #2e2824; }
+
+/* RULES SECTION */
+.rules-section {
+  padding: 44px 0 0;
+}
+
+.rules-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 20px;
+}
+
+.rules-list {
+  list-style: none;
+}
+
+.rules-list li {
+  font-size: 0.84rem;
+  color: var(--ink-mid);
+  line-height: 1.8;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--rule);
+  display: grid;
+  grid-template-columns: 16px 1fr;
+  gap: 16px;
+}
+
+.rules-list li::before {
+  content: '—';
+  font-family: 'DM Mono', monospace;
+  color: var(--rule);
+  font-size: 0.75rem;
+}
+
+@media (max-width: 560px) {
+  nav { padding: 0 20px; }
+  .page { padding: 0 20px 80px; }
+  .hero { padding: 40px 0 36px; }
+  .option { padding: 18px 18px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="https://theatre.1shop.tw/" class="nav-logo">咖啡小劇場</a>
+  <a href="https://theatre.1shop.tw/" class="nav-back">← 回首頁</a>
+</nav>
+
+<div class="page">
+
+  <div class="hero">
+    <p class="hero-tag">每月選豆 — Monthly</p>
+    <h1 class="hero-headline">好咖啡這件事，<br>你只需要<em>決定一次</em>。</h1>
+    <div class="hero-sub">
+      <p>每個月烘好之後我通知你，你來取。不需要研究，不需要比較，不需要記得下單。</p>
+      <p>告訴我你喜歡的方向，其他交給我。</p>
+    </div>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="step">
+    <div class="step-meta">
+      <span class="step-num">01 / 03</span>
+      <h2 class="step-title">選一個風味方向</h2>
+    </div>
+    <div class="option-list">
+      <div class="option" data-flavor="floral" onclick="selectFlavor(this)">
+        <div class="option-check"></div>
+        <div class="option-body">
+          <div class="option-name">細緻淡雅</div>
+          <div class="option-desc">花香、柑橘、清透果酸。經典水洗，淺焙。<br>喝手沖習慣了的人會喜歡。</div>
+        </div>
+      </div>
+      <div class="option" data-flavor="natural" onclick="selectFlavor(this)">
+        <div class="option-check"></div>
+        <div class="option-body">
+          <div class="option-name">果乾與酒香</div>
+          <div class="option-desc">莓果、熱帶水果、發酵的甜。厭氧或特殊後製，淺至中焙。<br>喜歡有個性的豆子。</div>
+        </div>
+      </div>
+      <div class="option" data-flavor="dark" onclick="selectFlavor(this)">
+        <div class="option-check"></div>
+        <div class="option-body">
+          <div class="option-name">濃郁苦甜</div>
+          <div class="option-desc">黑巧克力、焦糖、厚實的body。深烘焙。<br>加奶、或長期習慣深烘的人。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step">
+    <div class="step-meta">
+      <span class="step-num">02 / 03</span>
+      <h2 class="step-title">選每月包數</h2>
+    </div>
+    <div class="option-list">
+      <div class="option" data-plan="2" onclick="selectPlan(this)">
+        <div class="option-check"></div>
+        <div class="option-body">
+          <div class="option-name">兩包 / 月</div>
+          <div class="option-desc">依當月豆款定價，無折扣。</div>
+        </div>
+      </div>
+      <div class="option" data-plan="3" onclick="selectPlan(this)">
+        <div class="option-check"></div>
+        <div class="option-body">
+          <div class="option-name">三包 / 月</div>
+          <div class="option-desc">前兩包定價，第三包九折。</div>
+          <span class="option-badge">第三包 10% off</span>
+        </div>
+      </div>
+    </div>
+    <p class="footnote">需要四包以上？可同時送出兩份兩包訂單。</p>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step">
+    <div class="step-meta">
+      <span class="step-num">03 / 03</span>
+      <h2 class="step-title">選付款方式</h2>
+    </div>
+    <div class="option-list">
+      <div class="option" data-billing="monthly" onclick="selectBilling(this)">
+        <div class="option-check"></div>
+        <div class="option-body">
+          <div class="option-name">每月付款</div>
+          <div class="option-desc">烘好通知後付款取豆。隨時可暫停或結束。</div>
+        </div>
+      </div>
+      <div class="option" data-billing="yearly" onclick="selectBilling(this)">
+        <div class="option-check"></div>
+        <div class="option-body">
+          <div class="option-name">預付一年</div>
+          <div class="option-desc">付十一個月，第十二個月劇場招待。</div>
+          <span class="option-badge">多送一個月</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUMMARY + CTA -->
+  <div class="summary" id="summaryBox">
+    <p class="summary-title">確認選擇</p>
+    <div id="summaryRows"></div>
+    <div class="summary-total">
+      <span class="label">每月費用</span>
+      <span class="val" id="summaryTotal">—</span>
+    </div>
+    <div class="cta-wrap">
+      <p class="cta-note">確認後跳轉 LINE，系統會自動帶入你的選擇。我收到後回覆確認，並告訴你下次烘豆時間。</p>
+      <a href="#" class="cta-btn" id="ctaBtn" onclick="sendToLine(event)">確認，傳送到 LINE →</a>
+    </div>
+  </div>
+
+  <!-- RULES -->
+  <div class="rules-section">
+    <p class="rules-label">關於這個服務</p>
+    <ul class="rules-list">
+      <li>每月烘好之後我主動通知你，不是你來催我。</li>
+      <li>豆子種類依當月庫存和我的判斷決定，方向由你選，細節由我來。</li>
+      <li>沒有最低期數，每月付款隨時可以暫停。</li>
+      <li>預付年份如中途不想繼續，剩餘金額以豆子折抵。</li>
+      <li>取豆方式：來店自取，或每月固定安排配送（確認時討論）。</li>
+    </ul>
+  </div>
+
+</div><!-- /page -->
+
+<script>
+const state = { flavor: null, plan: null, billing: null };
+
+const flavorNames = { floral: '細緻淡雅', natural: '果乾與酒香', dark: '濃郁苦甜' };
+const planNames   = { '2': '兩包 / 月', '3': '三包 / 月' };
+const billingNames = { monthly: '每月付款', yearly: '預付一年（多送一個月）' };
+
+function selectFlavor(el) {
+  document.querySelectorAll('[data-flavor]').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  state.flavor = el.dataset.flavor;
+  update();
+}
+function selectPlan(el) {
+  document.querySelectorAll('[data-plan]').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  state.plan = el.dataset.plan;
+  update();
+}
+function selectBilling(el) {
+  document.querySelectorAll('[data-billing]').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  state.billing = el.dataset.billing;
+  update();
+}
+
+function update() {
+  const box = document.getElementById('summaryBox');
+  const rows = document.getElementById('summaryRows');
+  const total = document.getElementById('summaryTotal');
+  const btn = document.getElementById('ctaBtn');
+
+  const anySelected = state.flavor || state.plan || state.billing;
+  box.classList.toggle('visible', !!anySelected);
+
+  const lines = [];
+  if (state.flavor)  lines.push({ label: '風味方向', val: flavorNames[state.flavor] });
+  if (state.plan)    lines.push({ label: '每月包數', val: planNames[state.plan] });
+  if (state.billing) lines.push({ label: '付款方式', val: billingNames[state.billing] });
+
+  rows.innerHTML = lines.map(l =>
+    `<div class="summary-row"><span class="label">${l.label}</span><span class="val">${l.val}</span></div>`
+  ).join('');
+
+  if (state.plan === '2') total.textContent = '豆款定價 × 2';
+  else if (state.plan === '3') total.textContent = '豆款定價 × 2 + 九折';
+  else total.textContent = '—';
+
+  btn.classList.toggle('ready', !!(state.flavor && state.plan && state.billing));
+}
+
+function sendToLine(e) {
+  e.preventDefault();
+  if (!state.flavor || !state.plan || !state.billing) return;
+  const msg = encodeURIComponent(
+    `你好，我想訂閱每月選豆服務：\n風味方向：${flavorNames[state.flavor]}\n每月包數：${planNames[state.plan]}\n付款方式：${billingNames[state.billing]}`
+  );
+  window.open(`https://line.me/ti/p/~norman1881?${msg}`, '_blank');
+}
+</script>
+</body>
+</html>
