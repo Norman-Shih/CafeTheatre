@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>每月選豆 — 咖啡小劇場</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #ffffff;
+  --bg-soft: #f7f7f7;
+  --ink: #0f1419;
+  --ink-mid: #536471;
+  --ink-dim: #8b98a5;
+  --rule: #eff3f4;
+  --rule-mid: #cfd9de;
+  --accent: #1d9bf0;
+  --accent-bg: #e8f5fe;
+  --radius: 16px;
+}
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Inter', 'Noto Sans TC', sans-serif;
+  font-weight: 400;
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  max-width: 600px;
+  margin: 0 auto;
+  border-left: 1px solid var(--rule);
+  border-right: 1px solid var(--rule);
+}
+
+/* NAV — Twitter/X style */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(12px);
+  padding: 0 16px;
+  height: 53px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--rule);
+}
+.nav-logo { font-family: 'Noto Sans TC', sans-serif; font-weight: 700; font-size: 0.9rem; color: var(--ink); text-decoration: none; }
+.nav-back { font-size: 0.82rem; color: var(--ink-mid); text-decoration: none; transition: color 0.15s; }
+.nav-back:hover { color: var(--ink); }
+
+/* PROFILE HEADER */
+.profile-header {
+  padding: 16px 16px 0;
+}
+.profile-cover {
+  height: 130px;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 50%, #1a1a1a 100%);
+  border-radius: var(--radius);
+  margin-bottom: -40px;
+  position: relative;
+  overflow: hidden;
+}
+.profile-cover::after {
+  content: '☕';
+  position: absolute;
+  font-size: 4rem;
+  opacity: 0.08;
+  right: 24px;
+  bottom: 8px;
+}
+.profile-avatar-wrap {
+  padding: 0 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 12px;
+}
+.profile-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 4px solid #fff;
+  background: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  position: relative;
+  z-index: 1;
+}
+.follow-btn {
+  padding: 8px 20px;
+  border-radius: 100px;
+  border: 1px solid var(--rule-mid);
+  background: transparent;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--ink);
+  cursor: default;
+}
+.profile-info { padding: 0 16px 12px; }
+.profile-name { font-size: 1.1rem; font-weight: 800; color: var(--ink); margin-bottom: 2px; }
+.profile-handle { font-size: 0.88rem; color: var(--ink-mid); margin-bottom: 10px; }
+.profile-bio { font-size: 0.92rem; color: var(--ink); line-height: 1.5; margin-bottom: 12px; }
+.profile-meta { display: flex; gap: 16px; flex-wrap: wrap; }
+.profile-meta-item { font-size: 0.82rem; color: var(--ink-mid); display: flex; align-items: center; gap: 4px; }
+.profile-meta-item strong { color: var(--ink); font-weight: 700; }
+.profile-divider { height: 1px; background: var(--rule); margin-top: 12px; }
+
+/* PINNED POST — the offer card */
+.post {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--rule);
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: 12px;
+}
+.post-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--ink);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem; flex-shrink: 0;
+}
+.post-body {}
+.post-meta { display: flex; align-items: baseline; gap: 6px; margin-bottom: 4px; }
+.post-name { font-size: 0.9rem; font-weight: 700; color: var(--ink); }
+.post-handle { font-size: 0.88rem; color: var(--ink-mid); }
+.post-time { font-size: 0.82rem; color: var(--ink-dim); }
+.post-pinned {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--ink-mid);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 8px;
+  letter-spacing: 0.01em;
+}
+.post-text { font-size: 0.95rem; color: var(--ink); line-height: 1.55; margin-bottom: 12px; }
+.post-text a { color: var(--accent); text-decoration: none; }
+
+/* OFFER CARD inside post */
+.offer-card {
+  border: 1px solid var(--rule-mid);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+.offer-card-header {
+  background: var(--ink);
+  padding: 20px;
+  color: #fff;
+}
+.offer-card-tag {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 8px;
+}
+.offer-card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 4px;
+}
+.offer-card-sub { font-size: 0.82rem; color: rgba(255,255,255,0.6); }
+
+.offer-options { padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+
+.offer-opt {
+  border: 1.5px solid var(--rule-mid);
+  border-radius: 10px;
+  padding: 14px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: border-color 0.15s, background 0.15s;
+}
+.offer-opt:hover { border-color: var(--ink-mid); background: var(--bg-soft); }
+.offer-opt.selected { border-color: var(--accent); background: var(--accent-bg); }
+
+.offer-opt-radio {
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 2px solid var(--rule-mid);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: border-color 0.15s;
+}
+.offer-opt.selected .offer-opt-radio { border-color: var(--accent); }
+.offer-opt-dot { width: 9px; height: 9px; border-radius: 50%; background: transparent; transition: background 0.15s; }
+.offer-opt.selected .offer-opt-dot { background: var(--accent); }
+
+.offer-opt-body { flex: 1; }
+.offer-opt-name { font-size: 0.88rem; font-weight: 600; color: var(--ink); margin-bottom: 2px; }
+.offer-opt-desc { font-size: 0.75rem; color: var(--ink-mid); line-height: 1.5; }
+.offer-opt-badge {
+  font-size: 0.65rem; font-weight: 600;
+  background: #e6f4ea; color: #2e7d32;
+  border-radius: 4px; padding: 2px 7px;
+  white-space: nowrap; flex-shrink: 0;
+}
+
+/* PLAN SECTION inside offer */
+.offer-plans {
+  padding: 0 16px 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.offer-plan {
+  border: 1.5px solid var(--rule-mid);
+  border-radius: 10px;
+  padding: 16px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.offer-plan:hover { border-color: var(--ink-mid); background: var(--bg-soft); }
+.offer-plan.selected { border-color: var(--accent); background: var(--accent-bg); }
+.offer-plan-qty { font-size: 1.6rem; font-weight: 800; color: var(--ink); line-height: 1; }
+.offer-plan-unit { font-size: 0.7rem; color: var(--ink-mid); margin-bottom: 8px; }
+.offer-plan-desc { font-size: 0.75rem; color: var(--ink-mid); line-height: 1.5; }
+.offer-plan-tag { display: inline-block; margin-top: 6px; font-size: 0.65rem; font-weight: 600; background: #e6f4ea; color: #2e7d32; border-radius: 4px; padding: 2px 7px; }
+
+.offer-divider { height: 1px; background: var(--rule); margin: 0 16px; }
+
+/* BILLING inside offer */
+.offer-billing { padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+
+/* OFFER CTA */
+.offer-cta-wrap { padding: 0 16px 16px; }
+.offer-cta-note { font-size: 0.75rem; color: var(--ink-mid); line-height: 1.6; margin-bottom: 12px; }
+.offer-cta-btn {
+  display: block; width: 100%;
+  padding: 13px;
+  border-radius: 100px;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem; font-weight: 700;
+  text-align: center; text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.2s;
+  opacity: 0.4; pointer-events: none;
+}
+.offer-cta-btn.ready { opacity: 1; pointer-events: auto; }
+.offer-cta-btn:hover { background: #1a8cd8; }
+
+/* POST ACTIONS */
+.post-actions {
+  display: flex;
+  gap: 28px;
+  padding-top: 4px;
+}
+.post-action {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 0.82rem; color: var(--ink-mid);
+  cursor: default;
+}
+.post-action svg { width: 18px; height: 18px; }
+
+/* REGULAR POSTS */
+.post-text-only { font-size: 0.95rem; color: var(--ink); line-height: 1.55; }
+
+/* SUMMARY inline */
+.inline-summary {
+  background: var(--bg-soft);
+  border: 1px solid var(--rule-mid);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  display: none;
+}
+.inline-summary.visible { display: block; }
+.inline-summary-row { display: flex; justify-content: space-between; font-size: 0.8rem; padding: 4px 0; color: var(--ink-mid); }
+.inline-summary-row .v { font-weight: 600; color: var(--ink); }
+
+/* FOOTER */
+.page-footer {
+  padding: 20px 16px 60px;
+  font-size: 0.75rem;
+  color: var(--ink-dim);
+  line-height: 1.8;
+  border-top: 1px solid var(--rule);
+}
+.page-footer p + p { margin-top: 6px; }
+
+@media (max-width: 480px) {
+  .offer-plans { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="https://theatre.1shop.tw/" class="nav-logo">咖啡小劇場</a>
+  <a href="https://theatre.1shop.tw/" class="nav-back">← 返回</a>
+</nav>
+
+<!-- PROFILE -->
+<div class="profile-header">
+  <div class="profile-cover"></div>
+  <div class="profile-avatar-wrap">
+    <div class="profile-avatar">☕</div>
+    <button class="follow-btn">已追蹤</button>
+  </div>
+</div>
+<div class="profile-info">
+  <div class="profile-name">咖啡小劇場</div>
+  <div class="profile-handle">@cafetheatre.tw</div>
+  <div class="profile-bio">內湖自烘。不賣產地故事，只賣不讓你不舒服的咖啡。12年。</div>
+  <div class="profile-meta">
+    <div class="profile-meta-item">📍 台北內湖</div>
+    <div class="profile-meta-item"><strong>220</strong> 則評論</div>
+    <div class="profile-meta-item"><strong>4.8</strong> ★ Google</div>
+  </div>
+  <div class="profile-divider"></div>
+</div>
+
+<!-- PINNED POST — OFFER -->
+<div class="post">
+  <div class="post-avatar">☕</div>
+  <div class="post-body">
+    <div class="post-pinned">📌 置頂貼文</div>
+    <div class="post-meta">
+      <span class="post-name">咖啡小劇場</span>
+      <span class="post-handle">@cafetheatre.tw</span>
+    </div>
+    <div class="post-text">每個月我烘好之後通知你，你來取就好。不需要研究，不需要比較。你選方向，我選豆子。<br><br>這個決定做一次，之後不用再想。👇</div>
+
+    <!-- OFFER CARD -->
+    <div class="offer-card">
+      <div class="offer-card-header">
+        <div class="offer-card-tag">每月選豆 · Monthly</div>
+        <div class="offer-card-title">選一個方向，其他交給我。</div>
+        <div class="offer-card-sub">三步完成，直接傳 LINE 確認。</div>
+      </div>
+
+      <!-- FLAVOR -->
+      <div class="offer-options">
+        <div style="font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-mid);margin-bottom:2px;">① 風味方向</div>
+        <div class="offer-opt" data-flavor="floral" onclick="selectFlavor(this)">
+          <div class="offer-opt-radio"><div class="offer-opt-dot"></div></div>
+          <div class="offer-opt-body">
+            <div class="offer-opt-name">細緻淡雅</div>
+            <div class="offer-opt-desc">花香、柑橘、清透果酸。水洗淺焙。</div>
+          </div>
+        </div>
+        <div class="offer-opt" data-flavor="natural" onclick="selectFlavor(this)">
+          <div class="offer-opt-radio"><div class="offer-opt-dot"></div></div>
+          <div class="offer-opt-body">
+            <div class="offer-opt-name">果乾與酒香</div>
+            <div class="offer-opt-desc">莓果、熱帶、發酵甜。厭氧或特殊後製。</div>
+          </div>
+        </div>
+        <div class="offer-opt" data-flavor="dark" onclick="selectFlavor(this)">
+          <div class="offer-opt-radio"><div class="offer-opt-dot"></div></div>
+          <div class="offer-opt-body">
+            <div class="offer-opt-name">濃郁苦甜</div>
+            <div class="offer-opt-desc">巧克力、焦糖、厚實。深烘焙。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="offer-divider"></div>
+
+      <!-- PLAN -->
+      <div style="font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-mid);padding:12px 16px 8px;">② 每月包數</div>
+      <div class="offer-plans">
+        <div class="offer-plan" data-plan="2" onclick="selectPlan(this)">
+          <div class="offer-plan-qty">2</div>
+          <div class="offer-plan-unit">包 / 月</div>
+          <div class="offer-plan-desc">依當月定價，無折扣。</div>
+        </div>
+        <div class="offer-plan" data-plan="3" onclick="selectPlan(this)">
+          <div class="offer-plan-qty">3</div>
+          <div class="offer-plan-unit">包 / 月</div>
+          <div class="offer-plan-desc">第三包九折。</div>
+          <span class="offer-plan-tag">10% off</span>
+        </div>
+      </div>
+
+      <div class="offer-divider"></div>
+
+      <!-- BILLING -->
+      <div style="font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-mid);padding:12px 16px 8px;">③ 付款方式</div>
+      <div class="offer-billing">
+        <div class="offer-opt" data-billing="monthly" onclick="selectBilling(this)">
+          <div class="offer-opt-radio"><div class="offer-opt-dot"></div></div>
+          <div class="offer-opt-body">
+            <div class="offer-opt-name">每月付款</div>
+            <div class="offer-opt-desc">烘好通知後付款。隨時可暫停。</div>
+          </div>
+        </div>
+        <div class="offer-opt" data-billing="yearly" onclick="selectBilling(this)">
+          <div class="offer-opt-radio"><div class="offer-opt-dot"></div></div>
+          <div class="offer-opt-body">
+            <div class="offer-opt-name">預付一年</div>
+            <div class="offer-opt-desc">付十一個月，第十二個月招待。</div>
+          </div>
+          <span class="offer-opt-badge">多送一月</span>
+        </div>
+      </div>
+
+      <div class="offer-divider"></div>
+
+      <!-- SUMMARY + CTA -->
+      <div style="padding:12px 16px 0;">
+        <div class="inline-summary" id="summaryBox">
+          <div id="summaryRows"></div>
+        </div>
+      </div>
+      <div class="offer-cta-wrap">
+        <p class="offer-cta-note">確認後跳轉 LINE，系統自動帶入選擇。</p>
+        <a href="#" class="offer-cta-btn" id="ctaBtn" onclick="sendToLine(event)">傳送到 LINE 完成訂閱</a>
+      </div>
+    </div>
+
+    <!-- POST ACTIONS -->
+    <div class="post-actions">
+      <div class="post-action">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        LINE 聯繫
+      </div>
+      <div class="post-action">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+        分享
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- REGULAR POST 1 -->
+<div class="post">
+  <div class="post-avatar">☕</div>
+  <div class="post-body">
+    <div class="post-meta">
+      <span class="post-name">咖啡小劇場</span>
+      <span class="post-handle">@cafetheatre.tw</span>
+      <span class="post-time">· 3天前</span>
+    </div>
+    <div class="post-text-only">產地標示不是資訊，是服務。你想看到什麼，就給你看到什麼。</div>
+    <div class="post-actions" style="margin-top:12px;">
+      <div class="post-action" style="color:#536471;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        24
+      </div>
+      <div class="post-action" style="color:#536471;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        6
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- REGULAR POST 2 -->
+<div class="post">
+  <div class="post-avatar">☕</div>
+  <div class="post-body">
+    <div class="post-meta">
+      <span class="post-name">咖啡小劇場</span>
+      <span class="post-handle">@cafetheatre.tw</span>
+      <span class="post-time">· 1週前</span>
+    </div>
+    <div class="post-text-only">不苦、不鎖喉。這是我對每支豆子的最低標準，不是加分項。</div>
+    <div class="post-actions" style="margin-top:12px;">
+      <div class="post-action" style="color:#536471;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        41
+      </div>
+      <div class="post-action" style="color:#536471;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        11
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="page-footer">
+  <p>沒有最低訂閱期，每月付款隨時可暫停。預付年份如中途不想繼續，剩餘金額以豆子折抵。</p>
+  <p>取豆：來店自取，或每月固定配送（確認時討論）。</p>
+  <p style="margin-top:12px;color:var(--rule-mid);">咖啡小劇場 · 台北內湖 · cafetheatre.tw</p>
+</div>
+
+<script>
+const state = { flavor: null, plan: null, billing: null };
+const flavorNames  = { floral: '細緻淡雅', natural: '果乾與酒香', dark: '濃郁苦甜' };
+const planNames    = { '2': '兩包 / 月', '3': '三包 / 月' };
+const billingNames = { monthly: '每月付款', yearly: '預付一年（多送一個月）' };
+
+function selectFlavor(el) {
+  document.querySelectorAll('[data-flavor]').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected'); state.flavor=el.dataset.flavor; update();
+}
+function selectPlan(el) {
+  document.querySelectorAll('[data-plan]').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected'); state.plan=el.dataset.plan; update();
+}
+function selectBilling(el) {
+  document.querySelectorAll('[data-billing]').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected'); state.billing=el.dataset.billing; update();
+}
+
+function update() {
+  const box=document.getElementById('summaryBox'), rows=document.getElementById('summaryRows'), btn=document.getElementById('ctaBtn');
+  const any=state.flavor||state.plan||state.billing;
+  box.classList.toggle('visible',!!any);
+  const lines=[];
+  if(state.flavor) lines.push({label:'風味',val:flavorNames[state.flavor]});
+  if(state.plan) lines.push({label:'包數',val:planNames[state.plan]});
+  if(state.billing) lines.push({label:'付款',val:billingNames[state.billing]});
+  rows.innerHTML=lines.map(l=>`<div class="inline-summary-row"><span>${l.label}</span><span class="v">${l.val}</span></div>`).join('');
+  btn.classList.toggle('ready',!!(state.flavor&&state.plan&&state.billing));
+}
+
+function sendToLine(e) {
+  e.preventDefault();
+  if(!state.flavor||!state.plan||!state.billing) return;
+  const msg=encodeURIComponent(`你好，我想訂閱每月選豆服務：\n風味方向：${flavorNames[state.flavor]}\n每月包數：${planNames[state.plan]}\n付款方式：${billingNames[state.billing]}`);
+  window.open(`https://line.me/ti/p/~norman1881?${msg}`,'_blank');
+}
+</script>
+</body>
+</html>

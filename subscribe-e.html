@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>每月選豆 — 咖啡小劇場</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #f6f6f6;
+  --surface: #ffffff;
+  --ink: #111111;
+  --ink-mid: #555555;
+  --ink-dim: #999999;
+  --rule: #e8e8e8;
+  --primary: #111111;
+  --primary-text: #ffffff;
+  --success: #008060;
+  --radius: 12px;
+}
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Inter', 'Noto Sans TC', sans-serif;
+  font-weight: 400;
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* NAV */
+nav {
+  background: var(--surface);
+  border-bottom: 1px solid var(--rule);
+  padding: 0 24px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.nav-logo {
+  font-family: 'Noto Sans TC', sans-serif;
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: var(--ink);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+}
+.nav-back {
+  font-size: 0.82rem;
+  color: var(--ink-mid);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.15s;
+}
+.nav-back:hover { color: var(--ink); }
+
+/* PROGRESS BAR */
+.progress-wrap {
+  background: var(--surface);
+  border-bottom: 1px solid var(--rule);
+  padding: 16px 24px;
+  position: sticky;
+  top: 60px;
+  z-index: 99;
+}
+.progress-steps {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  max-width: 480px;
+  margin: 0 auto;
+}
+.progress-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  position: relative;
+}
+.progress-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: calc(16px + 8px);
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 1px;
+  background: var(--rule);
+  z-index: 0;
+}
+.progress-step.done:not(:last-child)::after { background: var(--ink); }
+
+.step-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--rule);
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--ink-dim);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+  transition: all 0.2s;
+}
+.progress-step.active .step-dot {
+  border-color: var(--ink);
+  color: var(--ink);
+  background: var(--surface);
+}
+.progress-step.done .step-dot {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: #fff;
+}
+.step-dot-check { display: none; }
+.progress-step.done .step-dot-check { display: block; }
+.progress-step.done .step-dot-num { display: none; }
+
+.step-label {
+  font-size: 0.72rem;
+  color: var(--ink-dim);
+  font-weight: 400;
+  white-space: nowrap;
+}
+.progress-step.active .step-label { color: var(--ink); font-weight: 500; }
+.progress-step.done .step-label { color: var(--ink-mid); }
+
+/* PAGE */
+.page {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 32px 24px 80px;
+}
+
+/* STEP PANEL */
+.step-panel {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 28px;
+  margin-bottom: 12px;
+  border: 1px solid var(--rule);
+  transition: opacity 0.2s;
+}
+.step-panel.locked {
+  opacity: 0.45;
+  pointer-events: none;
+}
+.panel-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 20px;
+}
+
+/* OPTION CHIPS / ROWS */
+.opt-rows { display: flex; flex-direction: column; gap: 8px; }
+.opt-row {
+  border: 1.5px solid var(--rule);
+  border-radius: 8px;
+  padding: 16px 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: border-color 0.15s, background 0.15s;
+  background: var(--surface);
+}
+.opt-row:hover { border-color: #bbb; background: #fafafa; }
+.opt-row.selected { border-color: var(--ink); background: #fafafa; }
+
+.opt-radio {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--rule);
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.15s;
+}
+.opt-row.selected .opt-radio { border-color: var(--ink); }
+.opt-radio-dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: transparent;
+  transition: background 0.15s;
+}
+.opt-row.selected .opt-radio-dot { background: var(--ink); }
+
+.opt-body { flex: 1; }
+.opt-name { font-size: 0.9rem; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
+.opt-desc { font-size: 0.78rem; color: var(--ink-mid); line-height: 1.55; }
+
+.opt-badge {
+  font-size: 0.68rem;
+  font-weight: 500;
+  background: #f0faf5;
+  color: var(--success);
+  border-radius: 4px;
+  padding: 3px 8px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* PLAN CARDS — side by side */
+.plan-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.plan-card {
+  border: 1.5px solid var(--rule);
+  border-radius: 8px;
+  padding: 20px 18px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  background: var(--surface);
+  position: relative;
+}
+.plan-card:hover { border-color: #bbb; background: #fafafa; }
+.plan-card.selected { border-color: var(--ink); background: #fafafa; }
+
+.plan-radio {
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 2px solid var(--rule);
+  margin-bottom: 14px;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.15s;
+}
+.plan-card.selected .plan-radio { border-color: var(--ink); }
+.plan-radio-dot { width: 8px; height: 8px; border-radius: 50%; background: transparent; transition: background 0.15s; }
+.plan-card.selected .plan-radio-dot { background: var(--ink); }
+
+.plan-qty { font-size: 1.8rem; font-weight: 600; color: var(--ink); line-height: 1; margin-bottom: 2px; }
+.plan-unit { font-size: 0.72rem; color: var(--ink-dim); margin-bottom: 10px; }
+.plan-desc { font-size: 0.78rem; color: var(--ink-mid); line-height: 1.55; }
+.plan-tag {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 0.68rem;
+  font-weight: 500;
+  background: #f0faf5;
+  color: var(--success);
+  border-radius: 4px;
+  padding: 3px 8px;
+}
+
+.fn { font-size: 0.74rem; color: var(--ink-dim); margin-top: 12px; line-height: 1.6; }
+
+/* SUMMARY CARD */
+.summary-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 1px solid var(--rule);
+  padding: 24px 28px;
+  margin-bottom: 12px;
+  display: none;
+}
+.summary-card.visible { display: block; }
+.summary-title { font-size: 0.78rem; font-weight: 600; color: var(--ink-dim); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; }
+.s-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--rule); font-size: 0.86rem; }
+.s-row:last-of-type { border-bottom: none; }
+.s-row .lbl { color: var(--ink-mid); }
+.s-row .val { font-weight: 500; color: var(--ink); }
+.s-total { display: flex; justify-content: space-between; align-items: baseline; padding-top: 16px; border-top: 1px solid var(--rule); margin-top: 4px; }
+.s-total .lbl { font-size: 0.86rem; color: var(--ink-mid); }
+.s-total .val { font-size: 1.3rem; font-weight: 600; color: var(--ink); }
+
+/* CTA */
+.cta-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 1px solid var(--rule);
+  padding: 24px 28px;
+}
+.cta-note { font-size: 0.8rem; color: var(--ink-dim); line-height: 1.7; margin-bottom: 16px; }
+.cta-btn {
+  display: block;
+  width: 100%;
+  padding: 16px;
+  background: var(--ink);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.2s;
+  opacity: 0.3;
+  pointer-events: none;
+}
+.cta-btn.ready { opacity: 1; pointer-events: auto; }
+.cta-btn:hover { background: #333; }
+
+/* TERMS */
+.terms { margin-top: 28px; }
+.terms-title { font-size: 0.78rem; font-weight: 500; color: var(--ink-dim); margin-bottom: 12px; }
+.terms-list { list-style: none; }
+.terms-list li {
+  font-size: 0.78rem;
+  color: var(--ink-dim);
+  line-height: 1.7;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.terms-list li::before { content: '·'; flex-shrink: 0; color: var(--rule); font-size: 1rem; line-height: 1.5; }
+
+@media (max-width: 480px) {
+  .progress-step .step-label { display: none; }
+  .plan-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="https://theatre.1shop.tw/" class="nav-logo">咖啡小劇場</a>
+  <a href="https://theatre.1shop.tw/" class="nav-back">← 回首頁</a>
+</nav>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-steps">
+    <div class="progress-step active" id="prog1">
+      <div class="step-dot">
+        <span class="step-dot-num">1</span>
+        <span class="step-dot-check">✓</span>
+      </div>
+      <span class="step-label">風味</span>
+    </div>
+    <div class="progress-step locked" id="prog2">
+      <div class="step-dot">
+        <span class="step-dot-num">2</span>
+        <span class="step-dot-check">✓</span>
+      </div>
+      <span class="step-label">包數</span>
+    </div>
+    <div class="progress-step locked" id="prog3">
+      <div class="step-dot">
+        <span class="step-dot-num">3</span>
+        <span class="step-dot-check">✓</span>
+      </div>
+      <span class="step-label">付款</span>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- STEP 1 -->
+  <div class="step-panel" id="panel1">
+    <div class="panel-title">選一個風味方向</div>
+    <div class="opt-rows">
+      <div class="opt-row" data-flavor="floral" onclick="selectFlavor(this)">
+        <div class="opt-radio"><div class="opt-radio-dot"></div></div>
+        <div class="opt-body">
+          <div class="opt-name">細緻淡雅</div>
+          <div class="opt-desc">花香、柑橘、清透果酸。經典水洗，淺焙。習慣手沖的人。</div>
+        </div>
+      </div>
+      <div class="opt-row" data-flavor="natural" onclick="selectFlavor(this)">
+        <div class="opt-radio"><div class="opt-radio-dot"></div></div>
+        <div class="opt-body">
+          <div class="opt-name">果乾與酒香</div>
+          <div class="opt-desc">莓果、熱帶水果、發酵甜。厭氧或特殊後製，淺至中焙。</div>
+        </div>
+      </div>
+      <div class="opt-row" data-flavor="dark" onclick="selectFlavor(this)">
+        <div class="opt-radio"><div class="opt-radio-dot"></div></div>
+        <div class="opt-body">
+          <div class="opt-name">濃郁苦甜</div>
+          <div class="opt-desc">黑巧克力、焦糖、厚實 body。深烘焙。加奶或習慣深烘。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step-panel locked" id="panel2">
+    <div class="panel-title">選每月包數</div>
+    <div class="plan-grid">
+      <div class="plan-card" data-plan="2" onclick="selectPlan(this)">
+        <div class="plan-radio"><div class="plan-radio-dot"></div></div>
+        <div class="plan-qty">2</div>
+        <div class="plan-unit">包 / 月</div>
+        <div class="plan-desc">依當月豆款定價，無折扣。</div>
+      </div>
+      <div class="plan-card" data-plan="3" onclick="selectPlan(this)">
+        <div class="plan-radio"><div class="plan-radio-dot"></div></div>
+        <div class="plan-qty">3</div>
+        <div class="plan-unit">包 / 月</div>
+        <div class="plan-desc">前兩包正常定價，第三包九折。</div>
+        <span class="plan-tag">第三包 10% off</span>
+      </div>
+    </div>
+    <p class="fn">需要四包以上，可同時送出兩份兩包訂單。</p>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step-panel locked" id="panel3">
+    <div class="panel-title">選付款方式</div>
+    <div class="opt-rows">
+      <div class="opt-row" data-billing="monthly" onclick="selectBilling(this)">
+        <div class="opt-radio"><div class="opt-radio-dot"></div></div>
+        <div class="opt-body">
+          <div class="opt-name">每月付款</div>
+          <div class="opt-desc">烘好通知後付款取豆。隨時可暫停，無最低期數。</div>
+        </div>
+      </div>
+      <div class="opt-row" data-billing="yearly" onclick="selectBilling(this)">
+        <div class="opt-radio"><div class="opt-radio-dot"></div></div>
+        <div class="opt-body">
+          <div class="opt-name">預付一年</div>
+          <div class="opt-desc">付十一個月的錢，第十二個月由劇場招待。</div>
+        </div>
+        <span class="opt-badge">多送一個月</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="summary-card" id="summaryBox">
+    <div class="summary-title">訂單摘要</div>
+    <div id="summaryRows"></div>
+    <div class="s-total">
+      <span class="lbl">每月費用</span>
+      <span class="val" id="summaryTotal">—</span>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-card">
+    <p class="cta-note">確認後跳轉 LINE，系統自動帶入你的選擇。我收到後回覆確認，並告訴你下次烘豆時間。</p>
+    <a href="#" class="cta-btn" id="ctaBtn" onclick="sendToLine(event)">傳送到 LINE，完成訂閱</a>
+  </div>
+
+  <!-- TERMS -->
+  <div class="terms">
+    <p class="terms-title">服務說明</p>
+    <ul class="terms-list">
+      <li>每月烘好之後我主動通知你，不是你來催我。</li>
+      <li>豆子種類依當月庫存和我的判斷，方向由你選，細節由我來。</li>
+      <li>沒有最低訂閱期，每月付款隨時可暫停。</li>
+      <li>預付年份如中途不想繼續，剩餘金額以豆子折抵。</li>
+      <li>取豆：來店自取，或每月固定配送（確認時討論）。</li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+const state = { flavor: null, plan: null, billing: null };
+const flavorNames  = { floral: '細緻淡雅', natural: '果乾與酒香', dark: '濃郁苦甜' };
+const planNames    = { '2': '兩包 / 月', '3': '三包 / 月' };
+const billingNames = { monthly: '每月付款', yearly: '預付一年（多送一個月）' };
+
+function unlockPanel(id) {
+  document.getElementById('panel'+id).classList.remove('locked');
+  document.getElementById('prog'+id).classList.remove('locked');
+  document.getElementById('prog'+id).classList.add('active');
+}
+function markDone(id) {
+  const prog = document.getElementById('prog'+id);
+  prog.classList.remove('active');
+  prog.classList.add('done');
+}
+
+function selectFlavor(el) {
+  document.querySelectorAll('[data-flavor]').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected'); state.flavor=el.dataset.flavor;
+  markDone(1); unlockPanel(2);
+  update();
+}
+function selectPlan(el) {
+  document.querySelectorAll('[data-plan]').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected'); state.plan=el.dataset.plan;
+  markDone(2); unlockPanel(3);
+  update();
+}
+function selectBilling(el) {
+  document.querySelectorAll('[data-billing]').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected'); state.billing=el.dataset.billing;
+  markDone(3);
+  update();
+}
+
+function update() {
+  const box=document.getElementById('summaryBox'), rows=document.getElementById('summaryRows');
+  const total=document.getElementById('summaryTotal'), btn=document.getElementById('ctaBtn');
+  const any = state.flavor||state.plan||state.billing;
+  box.classList.toggle('visible', !!any);
+  const lines=[];
+  if(state.flavor) lines.push({label:'風味方向',val:flavorNames[state.flavor]});
+  if(state.plan) lines.push({label:'每月包數',val:planNames[state.plan]});
+  if(state.billing) lines.push({label:'付款方式',val:billingNames[state.billing]});
+  rows.innerHTML=lines.map(l=>`<div class="s-row"><span class="lbl">${l.label}</span><span class="val">${l.val}</span></div>`).join('');
+  total.textContent=state.plan==='2'?'豆款定價 × 2':state.plan==='3'?'豆款定價 × 2 + 九折':'—';
+  btn.classList.toggle('ready',!!(state.flavor&&state.plan&&state.billing));
+}
+
+function sendToLine(e) {
+  e.preventDefault();
+  if(!state.flavor||!state.plan||!state.billing) return;
+  const msg=encodeURIComponent(`你好，我想訂閱每月選豆服務：\n風味方向：${flavorNames[state.flavor]}\n每月包數：${planNames[state.plan]}\n付款方式：${billingNames[state.billing]}`);
+  window.open(`https://line.me/ti/p/~norman1881?${msg}`,'_blank');
+}
+</script>
+</body>
+</html>

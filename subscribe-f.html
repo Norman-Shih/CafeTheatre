@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>每月選豆 — 咖啡小劇場</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #0a0a0a;
+  --surface: #141414;
+  --surface-2: #1e1e1e;
+  --border: #2a2a2a;
+  --border-active: #555;
+  --ink: #f0f0f0;
+  --ink-mid: #888;
+  --ink-dim: #555;
+  --accent: #f0f0f0;
+  --accent-bg: #1e1e1e;
+  --green: #3ecf8e;
+  --green-dim: #1a3d2e;
+  --radius: 10px;
+}
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Inter', 'Noto Sans TC', sans-serif;
+  font-weight: 400;
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* NAV */
+nav {
+  padding: 0 40px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: rgba(10,10,10,0.92);
+  backdrop-filter: blur(12px);
+  z-index: 100;
+}
+.nav-logo { font-family: 'Noto Sans TC', sans-serif; font-weight: 500; font-size: 0.88rem; letter-spacing: 0.04em; color: var(--ink); text-decoration: none; }
+.nav-back { font-size: 0.8rem; color: var(--ink-dim); text-decoration: none; transition: color 0.15s; }
+.nav-back:hover { color: var(--ink); }
+
+/* HERO */
+.hero {
+  text-align: center;
+  padding: 80px 24px 64px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+.hero-tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--green);
+  background: var(--green-dim);
+  border-radius: 100px;
+  padding: 4px 14px;
+  margin-bottom: 28px;
+}
+.hero-headline {
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--ink);
+  margin-bottom: 20px;
+  letter-spacing: -0.02em;
+}
+.hero-sub {
+  font-size: 1rem;
+  color: var(--ink-mid);
+  line-height: 1.75;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+/* BILLING TOGGLE */
+.billing-toggle-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 48px 0 56px;
+}
+.billing-toggle {
+  display: flex;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 4px;
+  gap: 2px;
+  position: relative;
+}
+.toggle-opt {
+  padding: 8px 22px;
+  border-radius: 100px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--ink-mid);
+  transition: color 0.15s, background 0.15s;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+.toggle-opt.active {
+  background: var(--surface-2);
+  color: var(--ink);
+}
+.toggle-badge {
+  font-size: 0.62rem;
+  font-weight: 600;
+  background: var(--green);
+  color: #000;
+  border-radius: 100px;
+  padding: 2px 7px;
+  letter-spacing: 0.02em;
+}
+
+/* PRICING GRID */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.plan-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px 28px;
+  cursor: pointer;
+  transition: border-color 0.15s, transform 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+.plan-card:hover { border-color: var(--border-active); transform: translateY(-2px); }
+.plan-card.selected { border-color: var(--ink); }
+.plan-card.featured {
+  border-color: var(--ink-mid);
+  background: var(--surface-2);
+}
+.plan-card.featured.selected { border-color: var(--ink); }
+
+.featured-badge {
+  position: absolute;
+  top: 0; left: 50%; transform: translateX(-50%);
+  background: var(--ink);
+  color: var(--bg);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 16px;
+  border-radius: 0 0 8px 8px;
+}
+
+.plan-name {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--ink-mid);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 20px;
+  margin-top: 12px;
+}
+.plan-card.featured .plan-name { margin-top: 24px; }
+
+.plan-price-wrap { margin-bottom: 8px; }
+.plan-price {
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+.plan-price-unit { font-size: 1rem; font-weight: 400; color: var(--ink-mid); margin-left: 2px; }
+.plan-price-note {
+  font-size: 0.75rem;
+  color: var(--ink-dim);
+  margin-top: 6px;
+  min-height: 18px;
+}
+.plan-price-note.saving { color: var(--green); }
+
+.plan-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 24px 0;
+}
+
+.plan-features { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+.plan-feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.82rem;
+  color: var(--ink-mid);
+  line-height: 1.5;
+}
+.plan-feature::before {
+  content: '✓';
+  color: var(--green);
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.plan-feature.highlight { color: var(--ink); }
+
+.plan-select-btn {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  border-radius: 7px;
+  border: 1px solid var(--border-active);
+  background: transparent;
+  color: var(--ink);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.plan-select-btn:hover { background: var(--surface-2); border-color: var(--ink); }
+.plan-card.selected .plan-select-btn {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+}
+.plan-card.featured .plan-select-btn {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+}
+.plan-card.featured .plan-select-btn:hover { background: #ddd; border-color: #ddd; color: #000; }
+
+/* FLAVOR SECTION */
+.section-wrap {
+  max-width: 720px;
+  margin: 56px auto 0;
+  padding: 0 24px;
+}
+.section-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-dim);
+  margin-bottom: 16px;
+}
+.flavor-tabs {
+  display: flex;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 4px;
+  gap: 4px;
+  margin-bottom: 40px;
+}
+.flavor-tab {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 7px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+  color: var(--ink-mid);
+  transition: background 0.15s, color 0.15s;
+  user-select: none;
+}
+.flavor-tab:hover { color: var(--ink); background: var(--surface-2); }
+.flavor-tab.selected { background: var(--surface-2); color: var(--ink); border: 1px solid var(--border-active); }
+
+.flavor-detail {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  display: none;
+}
+.flavor-detail.visible { display: block; }
+.flavor-detail-name { font-size: 0.9rem; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+.flavor-detail-desc { font-size: 0.82rem; color: var(--ink-mid); line-height: 1.7; }
+.flavor-keywords {
+  display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px;
+}
+.keyword {
+  font-size: 0.68rem;
+  font-weight: 500;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--ink-mid);
+  border-radius: 4px;
+  padding: 3px 10px;
+}
+
+/* SUMMARY + CTA */
+.cta-section {
+  max-width: 720px;
+  margin: 40px auto 0;
+  padding: 0 24px 80px;
+}
+.cta-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  display: none;
+}
+.cta-box.visible { display: block; }
+.cta-summary-rows { margin-bottom: 20px; }
+.s-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.84rem;
+}
+.s-row .lbl { color: var(--ink-mid); }
+.s-row .val { font-weight: 500; color: var(--ink); font-size: 0.82rem; }
+.s-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-top: 16px;
+  margin-bottom: 24px;
+}
+.s-total .lbl { font-size: 0.84rem; color: var(--ink-mid); }
+.s-total .val { font-size: 1.4rem; font-weight: 700; color: var(--ink); letter-spacing: -0.02em; }
+
+.cta-note { font-size: 0.78rem; color: var(--ink-dim); line-height: 1.7; margin-bottom: 16px; }
+.cta-btn {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  border-radius: 8px;
+  border: none;
+  background: var(--ink);
+  color: var(--bg);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.2s;
+  opacity: 0.3;
+  pointer-events: none;
+}
+.cta-btn.ready { opacity: 1; pointer-events: auto; }
+.cta-btn:hover { background: #e0e0e0; color: #000; }
+
+/* TERMS */
+.terms-section {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+.terms-title { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-dim); margin-bottom: 12px; }
+.terms-list { list-style: none; }
+.terms-list li {
+  font-size: 0.78rem;
+  color: var(--ink-dim);
+  line-height: 1.7;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  display: flex; gap: 10px; align-items: flex-start;
+}
+.terms-list li::before { content: '—'; color: var(--border-active); font-size: 0.7rem; flex-shrink: 0; margin-top: 2px; }
+
+@media (max-width: 560px) {
+  nav { padding: 0 20px; }
+  .pricing-grid { grid-template-columns: 1fr; padding: 0 20px; }
+  .section-wrap, .cta-section, .terms-section { padding: 0 20px 60px; }
+  .flavor-tabs { flex-direction: column; }
+  .flavor-tab { text-align: left; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="https://theatre.1shop.tw/" class="nav-logo">咖啡小劇場</a>
+  <a href="https://theatre.1shop.tw/" class="nav-back">← 回首頁</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <span class="hero-tag">每月選豆</span>
+  <h1 class="hero-headline">選一個方案，<br>剩下交給我。</h1>
+  <p class="hero-sub">每個月烘好之後通知你。不需要研究，不需要比較，不需要記得下單。</p>
+</div>
+
+<!-- BILLING TOGGLE -->
+<div class="billing-toggle-wrap">
+  <div class="billing-toggle">
+    <div class="toggle-opt active" id="toggle-monthly" onclick="setBilling('monthly')">每月付款</div>
+    <div class="toggle-opt" id="toggle-yearly" onclick="setBilling('yearly')">
+      預付一年
+      <span class="toggle-badge">多送一個月</span>
+    </div>
+  </div>
+</div>
+
+<!-- PLAN CARDS -->
+<div class="pricing-grid">
+  <div class="plan-card" data-plan="2" onclick="selectPlan(this)">
+    <div class="plan-name">基本</div>
+    <div class="plan-price-wrap">
+      <span class="plan-price">2<span class="plan-price-unit">包</span></span>
+    </div>
+    <p class="plan-price-note" id="note2">每包依當月豆款定價</p>
+    <div class="plan-divider"></div>
+    <ul class="plan-features">
+      <li class="plan-feature">每月兩包，方向由你選</li>
+      <li class="plan-feature">烘好主動通知</li>
+      <li class="plan-feature">隨時可暫停</li>
+    </ul>
+    <button class="plan-select-btn" onclick="selectPlan(this.closest('.plan-card'))">選這個方案</button>
+  </div>
+
+  <div class="plan-card featured" data-plan="3" onclick="selectPlan(this)">
+    <div class="featured-badge">推薦</div>
+    <div class="plan-name">進階</div>
+    <div class="plan-price-wrap">
+      <span class="plan-price">3<span class="plan-price-unit">包</span></span>
+    </div>
+    <p class="plan-price-note saving" id="note3">第三包九折</p>
+    <div class="plan-divider"></div>
+    <ul class="plan-features">
+      <li class="plan-feature">每月三包，方向由你選</li>
+      <li class="plan-feature highlight">第三包永久九折</li>
+      <li class="plan-feature">烘好主動通知</li>
+      <li class="plan-feature">隨時可暫停</li>
+    </ul>
+    <button class="plan-select-btn" onclick="selectPlan(this.closest('.plan-card'))">選這個方案</button>
+  </div>
+</div>
+
+<!-- FLAVOR -->
+<div class="section-wrap">
+  <p class="section-label">選一個風味方向</p>
+  <div class="flavor-tabs">
+    <div class="flavor-tab" data-flavor="floral" onclick="selectFlavor(this)">細緻淡雅</div>
+    <div class="flavor-tab" data-flavor="natural" onclick="selectFlavor(this)">果乾與酒香</div>
+    <div class="flavor-tab" data-flavor="dark" onclick="selectFlavor(this)">濃郁苦甜</div>
+  </div>
+
+  <div class="flavor-detail" id="detail-floral">
+    <div class="flavor-detail-name">細緻淡雅</div>
+    <div class="flavor-detail-desc">花香、柑橘、清透的果酸。經典水洗處理，淺焙。習慣喝手沖的人。</div>
+    <div class="flavor-keywords">
+      <span class="keyword">花香</span><span class="keyword">柑橘</span><span class="keyword">果酸</span><span class="keyword">淺焙</span><span class="keyword">水洗</span>
+    </div>
+  </div>
+  <div class="flavor-detail" id="detail-natural">
+    <div class="flavor-detail-name">果乾與酒香</div>
+    <div class="flavor-detail-desc">莓果、熱帶水果、發酵的甜。厭氧或特殊後製，淺至中焙。喜歡有個性的豆子。</div>
+    <div class="flavor-keywords">
+      <span class="keyword">莓果</span><span class="keyword">熱帶</span><span class="keyword">發酵甜</span><span class="keyword">厭氧</span><span class="keyword">特殊後製</span>
+    </div>
+  </div>
+  <div class="flavor-detail" id="detail-dark">
+    <div class="flavor-detail-name">濃郁苦甜</div>
+    <div class="flavor-detail-desc">黑巧克力、焦糖、厚實的 body。深烘焙。加奶或長期習慣深烘的人。</div>
+    <div class="flavor-keywords">
+      <span class="keyword">巧克力</span><span class="keyword">焦糖</span><span class="keyword">厚實</span><span class="keyword">深烘</span>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="cta-box" id="ctaBox">
+    <div class="cta-summary-rows" id="summaryRows"></div>
+    <div class="s-total">
+      <span class="lbl">每月費用</span>
+      <span class="val" id="summaryTotal">—</span>
+    </div>
+    <p class="cta-note">確認後跳轉 LINE，系統自動帶入選擇。我收到後回覆確認，並告訴你下次烘豆時間。</p>
+    <a href="#" class="cta-btn" id="ctaBtn" onclick="sendToLine(event)">傳送到 LINE，完成訂閱</a>
+  </div>
+</div>
+
+<!-- TERMS -->
+<div class="terms-section">
+  <p class="terms-title">服務說明</p>
+  <ul class="terms-list">
+    <li>每月烘好之後我主動通知你，不是你來催我。</li>
+    <li>豆子種類依當月庫存和我的判斷，方向由你選，細節由我來。</li>
+    <li>沒有最低訂閱期，每月付款隨時可暫停。</li>
+    <li>預付年份如中途不想繼續，剩餘金額以豆子折抵。</li>
+    <li>取豆：來店自取，或每月固定配送（確認時討論）。</li>
+  </ul>
+</div>
+
+<script>
+const state = { flavor: null, plan: null, billing: 'monthly' };
+const flavorNames  = { floral: '細緻淡雅', natural: '果乾與酒香', dark: '濃郁苦甜' };
+const planNames    = { '2': '兩包 / 月', '3': '三包 / 月' };
+const billingNames = { monthly: '每月付款', yearly: '預付一年（多送一個月）' };
+
+function setBilling(val) {
+  state.billing = val;
+  document.getElementById('toggle-monthly').classList.toggle('active', val==='monthly');
+  document.getElementById('toggle-yearly').classList.toggle('active', val==='yearly');
+  update();
+}
+
+function selectFlavor(el) {
+  document.querySelectorAll('.flavor-tab').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  state.flavor = el.dataset.flavor;
+  document.querySelectorAll('.flavor-detail').forEach(d=>d.classList.remove('visible'));
+  document.getElementById('detail-'+state.flavor).classList.add('visible');
+  update();
+}
+
+function selectPlan(el) {
+  document.querySelectorAll('.plan-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  state.plan = el.dataset.plan;
+  update();
+}
+
+function update() {
+  const box=document.getElementById('ctaBox'), rows=document.getElementById('summaryRows');
+  const total=document.getElementById('summaryTotal'), btn=document.getElementById('ctaBtn');
+  const any = state.flavor||state.plan;
+  box.classList.toggle('visible', !!any);
+  const lines=[];
+  if(state.plan) lines.push({label:'方案',val:planNames[state.plan]});
+  if(state.flavor) lines.push({label:'風味方向',val:flavorNames[state.flavor]});
+  lines.push({label:'付款方式',val:billingNames[state.billing]});
+  rows.innerHTML=lines.map(l=>`<div class="s-row"><span class="lbl">${l.label}</span><span class="val">${l.val}</span></div>`).join('');
+  total.textContent=state.plan==='2'?'豆款定價 × 2':state.plan==='3'?'豆款定價 × 2 + 九折':'—';
+  btn.classList.toggle('ready',!!(state.flavor&&state.plan));
+}
+
+function sendToLine(e) {
+  e.preventDefault();
+  if(!state.flavor||!state.plan) return;
+  const msg=encodeURIComponent(`你好，我想訂閱每月選豆服務：\n方案：${planNames[state.plan]}\n風味方向：${flavorNames[state.flavor]}\n付款方式：${billingNames[state.billing]}`);
+  window.open(`https://line.me/ti/p/~norman1881?${msg}`,'_blank');
+}
+</script>
+</body>
+</html>
