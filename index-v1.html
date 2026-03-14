@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>咖啡小劇場 — 今日節目單</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Noto+Serif+TC:wght@300;400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --black: #0f0d0b;
+  --off-black: #1a1714;
+  --paper: #f0ebe0;
+  --gold: #b8965a;
+  --gold-dim: #7a6238;
+  --grey: #6a6258;
+  --mid: #8a8070;
+  --rule: rgba(255,255,255,0.07);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--paper);
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 300;
+  overflow-x: hidden;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 200;
+}
+
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 50;
+  padding: 24px 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(to bottom, rgba(15,13,11,0.95), transparent);
+}
+
+.nav-logo {
+  font-family: 'Cormorant', serif;
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  color: var(--paper);
+  text-decoration: none;
+}
+
+.nav-links { display: flex; gap: 36px; list-style: none; }
+
+.nav-links a {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: var(--mid);
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 0.3s;
+}
+
+.nav-links a:hover { color: var(--paper); }
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 48px 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Cormorant', serif;
+  font-size: clamp(120px, 22vw, 300px);
+  font-weight: 600;
+  font-style: italic;
+  color: transparent;
+  -webkit-text-stroke: 0.5px rgba(255,255,255,0.035);
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+  letter-spacing: -0.02em;
+}
+
+.hero-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  letter-spacing: 0.3em;
+  color: var(--gold);
+  margin-bottom: 28px;
+  opacity: 0;
+  animation: up 0.9s ease 0.2s forwards;
+}
+
+.hero-title {
+  font-family: 'Cormorant', serif;
+  font-size: clamp(52px, 8vw, 110px);
+  font-weight: 300;
+  line-height: 1.0;
+  letter-spacing: -0.01em;
+  margin-bottom: 40px;
+  opacity: 0;
+  animation: up 0.9s ease 0.4s forwards;
+}
+
+.hero-title em { font-style: italic; font-weight: 300; color: var(--gold); }
+
+.hero-sub {
+  max-width: 500px;
+  font-size: 17px;
+  font-weight: 300;
+  line-height: 2.1;
+  color: rgba(240,235,224,0.55);
+  margin-bottom: 52px;
+  opacity: 0;
+  animation: up 0.9s ease 0.6s forwards;
+}
+
+.hero-btns {
+  display: flex;
+  gap: 16px;
+  opacity: 0;
+  animation: up 0.9s ease 0.8s forwards;
+}
+
+.btn {
+  display: inline-block;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 16px 36px;
+  transition: all 0.3s;
+}
+
+.btn-fill { background: var(--gold); color: var(--black); }
+.btn-fill:hover { background: var(--paper); }
+.btn-outline { border: 0.5px solid rgba(255,255,255,0.18); color: var(--paper); }
+.btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+/* PROGRAMME SECTION */
+.programme {
+  background: var(--off-black);
+  padding: 100px 48px;
+  border-top: 0.5px solid var(--rule);
+}
+
+.act-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 52px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.act-label::after {
+  content: '';
+  flex: 1;
+  max-width: 60px;
+  height: 0.5px;
+  background: var(--gold-dim);
+}
+
+.programme-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+
+.prog-left {
+  padding-right: 64px;
+  border-right: 0.5px solid var(--rule);
+}
+
+.prog-right { padding-left: 64px; }
+
+.prog-title {
+  font-family: 'Cormorant', serif;
+  font-size: clamp(36px, 5vw, 60px);
+  font-weight: 300;
+  font-style: italic;
+  line-height: 1.1;
+  margin-bottom: 48px;
+}
+
+/* beans */
+.bean-list { display: flex; flex-direction: column; }
+
+.bean-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  align-items: start;
+  padding: 24px 0;
+  border-bottom: 0.5px solid var(--rule);
+}
+
+.bean-item:first-child { border-top: 0.5px solid var(--rule); }
+.bean-item:hover .bean-name { color: var(--gold); }
+
+.bean-name {
+  font-family: 'Cormorant', serif;
+  font-size: 26px;
+  font-weight: 400;
+  font-style: italic;
+  margin-bottom: 8px;
+  transition: color 0.3s;
+  line-height: 1.2;
+}
+
+.bean-origin {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--mid);
+  line-height: 1.9;
+}
+
+.bean-reason {
+  font-size: 13px;
+  font-style: italic;
+  color: rgba(240,235,224,0.38);
+  line-height: 1.8;
+  margin-top: 8px;
+}
+
+.bean-price {
+  font-family: 'Cormorant', serif;
+  font-size: 22px;
+  font-weight: 300;
+  padding-top: 4px;
+  white-space: nowrap;
+}
+
+/* drink grid */
+.drink-heading {
+  font-family: 'Cormorant', serif;
+  font-size: 32px;
+  font-weight: 300;
+  font-style: italic;
+  margin: 48px 0 24px;
+}
+
+.drink-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-top: 0.5px solid var(--rule);
+}
+
+.drink-item {
+  padding: 20px 20px 20px 0;
+  border-bottom: 0.5px solid var(--rule);
+}
+
+.drink-item:nth-child(even) {
+  padding-left: 20px;
+  padding-right: 0;
+  border-left: 0.5px solid var(--rule);
+}
+
+.drink-name { font-size: 15px; font-weight: 300; margin-bottom: 6px; }
+.drink-detail { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--mid); letter-spacing: 0.08em; }
+
+/* space options */
+.space-options { display: flex; flex-direction: column; }
+
+.space-opt {
+  padding: 32px 0;
+  border-bottom: 0.5px solid var(--rule);
+}
+
+.space-opt:first-child { border-top: 0.5px solid var(--rule); }
+
+.space-num {
+  font-family: 'Cormorant', serif;
+  font-size: 13px;
+  color: var(--gold);
+  letter-spacing: 0.2em;
+  margin-bottom: 12px;
+}
+
+.space-title { font-size: 17px; font-weight: 300; margin-bottom: 10px; line-height: 1.5; }
+
+.space-desc {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--mid);
+  letter-spacing: 0.08em;
+  line-height: 2;
+  margin-bottom: 16px;
+}
+
+.space-price {
+  font-family: 'Cormorant', serif;
+  font-size: 26px;
+  font-weight: 300;
+}
+
+.space-note {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--gold);
+  letter-spacing: 0.12em;
+  margin-top: 6px;
+}
+
+.prog-footer {
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 0.5px solid var(--rule);
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  color: var(--mid);
+  letter-spacing: 0.1em;
+  line-height: 2.2;
+}
+
+/* ABOUT */
+.about {
+  padding: 100px 48px;
+  border-top: 0.5px solid var(--rule);
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 80px;
+  align-items: start;
+}
+
+.about-left { position: sticky; top: 120px; }
+
+.about-year {
+  font-family: 'Cormorant', serif;
+  font-size: clamp(80px, 14vw, 180px);
+  font-weight: 300;
+  font-style: italic;
+  color: transparent;
+  -webkit-text-stroke: 0.5px rgba(255,255,255,0.07);
+  line-height: 1;
+  margin-bottom: 12px;
+}
+
+.about-loc {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  color: var(--mid);
+  line-height: 2.2;
+}
+
+.about-text {
+  font-size: 17px;
+  font-weight: 300;
+  line-height: 2.3;
+  color: rgba(240,235,224,0.7);
+}
+
+.about-text p { margin-bottom: 28px; }
+.about-text p:last-child { margin-bottom: 0; }
+.about-text strong { color: var(--paper); font-weight: 300; }
+
+/* VISIT */
+.visit {
+  background: var(--off-black);
+  padding: 100px 48px;
+  border-top: 0.5px solid var(--rule);
+}
+
+.visit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; }
+
+.visit-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  color: var(--gold);
+  margin-bottom: 32px;
+}
+
+.visit-body {
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 2.3;
+  color: rgba(240,235,224,0.6);
+  font-style: normal;
+}
+
+.visit-body strong { color: var(--paper); font-weight: 300; }
+
+.hours { display: flex; flex-direction: column; }
+
+.hour-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-bottom: 0.5px solid var(--rule);
+  font-size: 14px;
+}
+
+.hour-row:first-child { border-top: 0.5px solid var(--rule); }
+.hour-day { color: var(--mid); }
+.hour-time { font-family: 'DM Mono', monospace; font-size: 13px; letter-spacing: 0.08em; color: var(--paper); }
+.hour-off { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--grey); }
+
+footer {
+  padding: 40px 48px;
+  border-top: 0.5px solid var(--rule);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-l { font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.2em; color: var(--mid); line-height: 2; }
+.footer-r { font-family: 'Cormorant', serif; font-size: 16px; font-style: italic; color: var(--mid); }
+
+@keyframes up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  nav { padding: 24px; }
+  .nav-links { display: none; }
+  .hero { padding: 0 24px 60px; }
+  .programme { padding: 72px 24px; }
+  .programme-grid { grid-template-columns: 1fr; gap: 60px; }
+  .prog-left { padding-right: 0; border-right: none; border-bottom: 0.5px solid var(--rule); padding-bottom: 60px; }
+  .prog-right { padding-left: 0; }
+  .about { padding: 72px 24px; }
+  .about-grid { grid-template-columns: 1fr; gap: 40px; }
+  .about-left { position: static; }
+  .visit { padding: 72px 24px; }
+  .visit-grid { grid-template-columns: 1fr; gap: 48px; }
+  .drink-item:nth-child(even) { padding-left: 0; border-left: none; }
+  footer { padding: 32px 24px; flex-direction: column; gap: 16px; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-logo">咖啡小劇場</a>
+  <ul class="nav-links">
+    <li><a href="#programme">今日節目</a></li>
+    <li><a href="#about">關於</a></li>
+    <li><a href="#visit">來店</a></li>
+    <li><a href="https://theatre.1shop-app.com/coffee" target="_blank">購豆</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg">Theatre</div>
+  <div class="hero-eyebrow">Coffee Theatre · 內湖 · 自烘 · 2014</div>
+  <h1 class="hero-title">今天的<em>節目</em><br>不一樣</h1>
+  <p class="hero-sub">
+    在內湖住宅區，自己烘豆，一個人顧，開了 12 年。<br>
+    不是咖啡教室，也不是網美打卡點。<br>
+    就是一杯認真做的咖啡，一個可以待著的地方。
+  </p>
+  <div class="hero-btns">
+    <a href="#programme" class="btn btn-fill">今日節目單</a>
+    <a href="https://theatre.1shop-app.com/coffee" target="_blank" class="btn btn-outline">線上購豆</a>
+  </div>
+</section>
+
+<!-- ACT I -->
+<section class="programme" id="programme">
+  <div class="act-label">Act I · 這陣子在烘的</div>
+
+  <div class="programme-grid">
+    <div class="prog-left">
+      <h2 class="prog-title">我選了<br>這些</h2>
+
+      <div class="bean-list">
+        <div class="bean-item">
+          <div>
+            <div class="bean-name">百香圓舞曲</div>
+            <div class="bean-origin">Ethiopia · Yirgacheffe · Natural<br>莓果、荔枝、百香果、鳳梨</div>
+            <div class="bean-reason">喝這支的時候會忘記在想什麼事。</div>
+          </div>
+          <div class="bean-price">750</div>
+        </div>
+        <div class="bean-item">
+          <div>
+            <div class="bean-name">葡萄蜜糖</div>
+            <div class="bean-origin">Rwanda · Gatezi · Anaerobic<br>白葡萄酒、黑醋栗、白桃、蜂蜜</div>
+            <div class="bean-reason">發酵感剛好在邊界上，這支沒有過。</div>
+          </div>
+          <div class="bean-price">750</div>
+        </div>
+        <div class="bean-item">
+          <div>
+            <div class="bean-name">綠寶石</div>
+            <div class="bean-origin">Indonesia · Mandheling · Wet-hulled<br>草本香料、仙草茶、柑橘、青梅</div>
+            <div class="bean-reason">給不想被花香說服的人。</div>
+          </div>
+          <div class="bean-price">450</div>
+        </div>
+        <div class="bean-item">
+          <div>
+            <div class="bean-name">花神</div>
+            <div class="bean-origin">Guatemala · Antigua · Washed<br>柑橘、花香、奶油、核果、焦糖</div>
+            <div class="bean-reason">最容易被忽略，值得被認真喝一次。</div>
+          </div>
+          <div class="bean-price">400</div>
+        </div>
+      </div>
+
+      <div class="drink-heading">怎麼喝</div>
+      <div class="drink-grid">
+        <div class="drink-item">
+          <div class="drink-name">黑咖啡</div>
+          <div class="drink-detail">手沖 160–180 · 美式 120</div>
+        </div>
+        <div class="drink-item">
+          <div class="drink-name">加牛奶</div>
+          <div class="drink-detail">拿鐵 150 · 澳白 150</div>
+        </div>
+        <div class="drink-item">
+          <div class="drink-name">冰的</div>
+          <div class="drink-detail">+10，告訴我</div>
+        </div>
+        <div class="drink-item">
+          <div class="drink-name">無咖啡因</div>
+          <div class="drink-detail">有的話黑板會寫</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prog-right">
+      <h2 class="prog-title">你今天<br>是哪種觀眾</h2>
+
+      <div class="space-options">
+        <div class="space-opt">
+          <div class="space-num">I</div>
+          <div class="space-title">短暫停留，喝杯咖啡</div>
+          <div class="space-desc">外帶，或坐一下<br>不需要插座，不需要理由</div>
+          <div class="space-price">照單點</div>
+          <div class="space-note">飲品定價如左</div>
+        </div>
+        <div class="space-opt">
+          <div class="space-num">II</div>
+          <div class="space-title">長時間工作，需要插座與網路</div>
+          <div class="space-desc">電源、WiFi<br>一個不會催你的下午</div>
+          <div class="space-price">門票 200</div>
+          <div class="space-note">任選一杯飲品，不限時</div>
+        </div>
+      </div>
+
+      <div class="prog-footer">
+        不確定要什麼 → 告訴我你現在的狀態，我來選。<br>
+        豆子想帶回家 → 問我，我幫你選，現場裝袋。
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="act-label">關於這個地方</div>
+  <div class="about-grid">
+    <div class="about-left">
+      <div class="about-year">12</div>
+      <div class="about-loc">年<br>內湖區<br>台北市<br>———<br>自烘</div>
+    </div>
+    <div class="about-text">
+      <p>星巴克還沒進台灣的年代，同學都在泡沫紅茶店打牌抽菸，有個人帶我走進了一家自家烘焙咖啡館。那天之後我就沒辦法喝三合一了。</p>
+      <p>開始研究虹吸、手沖、義式，跑去東京找老店，在澳洲做過吧台。後來自己烘豆，不是為了開店，是因為自己烘比較省錢，而且可以控制。那時候 25 歲。</p>
+      <p>後來開了咖啡小劇場。在內湖住宅區，<strong>一個人顧，做了 12 年。</strong></p>
+      <p>我對咖啡的要求是滑順、甜、乾淨，沒有瑕疵味。這個標準我自己都還沒完全達到，所以還在烘，還在調整，還在鑽研。</p>
+      <p>來這裡的人不需要懂很多。常客有自己的習慣，第一次來的人告訴我你喝什麼，我幫你選。<strong>喜歡深焙的人我不會試圖說服你喝淺焙。</strong></p>
+      <p>這裡不是咖啡教室，也不是網美打卡點。就是一杯認真做的咖啡，一個可以待著的地方。</p>
+    </div>
+  </div>
+</section>
+
+<!-- VISIT -->
+<section class="visit" id="visit">
+  <div class="act-label">來店</div>
+  <div class="visit-grid">
+    <div>
+      <div class="visit-label">地址</div>
+      <address class="visit-body" style="margin-bottom:48px;">
+        台北市內湖區<br>
+        文德路 22 巷 9 弄 66 號一樓<br><br>
+        <strong>捷運文德站</strong>步行約 10 分鐘<br>
+        在住宅區裡，找到就知道了<br><br>
+        (02) 8751-8961 · 0925 007 112
+      </address>
+      <div class="visit-label">購豆</div>
+      <div class="visit-body">
+        滿 800 元免運，7-11 店到店。<br>
+        固定需求告訴我，<strong>我幫你留豆</strong>。
+      </div>
+    </div>
+    <div>
+      <div class="visit-label">營業時間</div>
+      <div class="hours">
+        <div class="hour-row"><span class="hour-day">週一</span><span class="hour-off">公休</span></div>
+        <div class="hour-row"><span class="hour-day">週二</span><span class="hour-time">12:00–20:30</span></div>
+        <div class="hour-row"><span class="hour-day">週三</span><span class="hour-time">12:00–20:30</span></div>
+        <div class="hour-row"><span class="hour-day">週四</span><span class="hour-time">12:00–20:30</span></div>
+        <div class="hour-row"><span class="hour-day">週五</span><span class="hour-time">12:00–20:30</span></div>
+        <div class="hour-row"><span class="hour-day">週六</span><span class="hour-time">12:00–20:30</span></div>
+        <div class="hour-row"><span class="hour-day">週日</span><span class="hour-time">12:00–20:30</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-l">咖啡小劇場 Coffee Theatre · 台北內湖 · © 2014</div>
+  <div class="footer-r">對的人自然會留下來。</div>
+</footer>
+
+</body>
+</html>
