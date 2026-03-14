@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>選豆指南 — 咖啡小劇場</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+TC:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #080808;
+  --surface: #111;
+  --surface2: #171717;
+  --ink: #f0f0f0;
+  --ink-mid: #666;
+  --ink-dim: #2e2e2e;
+  --rule: #1a1a1a;
+  --accent: #e8ff00;
+  --radius: 14px;
+}
+html, body { height: 100%; overflow: hidden; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Noto Sans TC', sans-serif;
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  flex-direction: column;
+}
+
+/* NAV */
+nav {
+  flex-shrink: 0;
+  height: 52px;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--rule);
+  background: var(--bg);
+}
+.nav-logo {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-decoration: none;
+}
+.nav-back {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.15s;
+  display: none;
+}
+.nav-back.visible { display: block; }
+.nav-back:hover { color: var(--ink); }
+
+/* PROGRESS */
+.progress-bar-wrap {
+  flex-shrink: 0;
+  height: 2px;
+  background: var(--rule);
+}
+.progress-bar {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.5s cubic-bezier(0.16,1,0.3,1);
+  width: 0%;
+}
+
+/* MAIN */
+main {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+/* SCREENS */
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0 24px 24px;
+  opacity: 0;
+  transform: translateX(32px);
+  pointer-events: none;
+  transition: opacity 0.35s cubic-bezier(0.16,1,0.3,1), transform 0.35s cubic-bezier(0.16,1,0.3,1);
+  overflow-y: auto;
+}
+.screen.active {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+.screen.exit {
+  opacity: 0;
+  transform: translateX(-32px);
+  pointer-events: none;
+}
+
+/* STEP HEADER */
+.step-header {
+  padding: 40px 0 32px;
+  flex-shrink: 0;
+}
+.step-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.step-tag::before {
+  content: '';
+  width: 20px;
+  height: 1px;
+  background: var(--accent);
+}
+.step-q {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2.2rem, 8vw, 3.2rem);
+  line-height: 1.0;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+.step-hint {
+  font-size: 0.82rem;
+  color: var(--ink-mid);
+  line-height: 1.6;
+}
+
+/* OPTIONS */
+.options { display: flex; flex-direction: column; gap: 10px; flex: 1; }
+
+.opt {
+  border: 1.5px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 20px 20px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, transform 0.15s;
+  background: var(--surface);
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+.opt:active { transform: scale(0.98); }
+.opt:hover { border-color: #333; background: var(--surface2); }
+.opt.selected { border-color: var(--accent); background: var(--surface2); }
+
+.opt-icon {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  background: var(--rule);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+.opt.selected .opt-icon { background: var(--accent); }
+
+.opt-body { flex: 1; }
+.opt-name {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+.opt-desc {
+  font-size: 0.78rem;
+  color: var(--ink-mid);
+  line-height: 1.55;
+}
+.opt.selected .opt-desc { color: #888; }
+
+.opt-check {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid var(--rule);
+  flex-shrink: 0;
+  margin-top: 2px;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.2s, background 0.2s;
+  font-size: 0.6rem;
+  color: transparent;
+}
+.opt.selected .opt-check {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--bg);
+}
+
+/* NEXT BTN */
+.next-wrap {
+  padding-top: 20px;
+  flex-shrink: 0;
+}
+.next-btn {
+  width: 100%;
+  padding: 16px;
+  border-radius: var(--radius);
+  border: none;
+  background: var(--accent);
+  color: var(--bg);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+  opacity: 0.25;
+  pointer-events: none;
+}
+.next-btn.ready { opacity: 1; pointer-events: auto; }
+.next-btn:active { transform: scale(0.98); }
+
+/* RESULT SCREEN */
+.result-header {
+  padding: 40px 0 24px;
+  flex-shrink: 0;
+}
+.result-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.result-tag::before { content: ''; width: 20px; height: 1px; background: var(--accent); }
+.result-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2rem, 7vw, 2.8rem);
+  line-height: 1;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+.result-sub {
+  font-size: 0.82rem;
+  color: var(--ink-mid);
+  line-height: 1.6;
+}
+
+/* RESULT CARD */
+.result-card {
+  background: var(--surface);
+  border: 1.5px solid var(--accent);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+.result-card-top {
+  background: var(--accent);
+  padding: 20px;
+}
+.result-card-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(8,8,8,0.5);
+  margin-bottom: 6px;
+}
+.result-card-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem;
+  color: var(--bg);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.result-card-origin {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(8,8,8,0.5);
+}
+.result-card-body {
+  padding: 20px;
+}
+.result-reason {
+  font-size: 0.88rem;
+  line-height: 1.75;
+  color: var(--ink-mid);
+  margin-bottom: 16px;
+}
+.result-reason strong { color: var(--ink); font-weight: 400; }
+.result-price {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--ink-mid);
+  letter-spacing: 0.06em;
+}
+
+/* ALSO CONSIDER */
+.also-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+  margin-bottom: 12px;
+}
+.also-cards { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+.also-card {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 16px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.also-name {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 3px;
+}
+.also-desc { font-size: 0.75rem; color: var(--ink-mid); line-height: 1.5; }
+.also-price { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--ink-mid); white-space: nowrap; }
+
+/* CTA BTNS */
+.result-ctas { display: flex; flex-direction: column; gap: 10px; }
+.cta-primary {
+  display: block;
+  width: 100%;
+  padding: 16px;
+  border-radius: var(--radius);
+  border: none;
+  background: var(--accent);
+  color: var(--bg);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.cta-primary:hover { opacity: 0.85; }
+.cta-secondary {
+  display: block;
+  width: 100%;
+  padding: 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--rule);
+  background: transparent;
+  color: var(--ink-mid);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+.cta-secondary:hover { border-color: var(--ink-mid); color: var(--ink); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">咖啡小劇場</a>
+  <span class="nav-back" id="backBtn" onclick="goBack()">← 上一步</span>
+</nav>
+<div class="progress-bar-wrap">
+  <div class="progress-bar" id="progressBar"></div>
+</div>
+
+<main>
+
+  <!-- SCREEN 1: 沖煮方式 -->
+  <div class="screen active" id="s1">
+    <div class="step-header">
+      <p class="step-tag">Step 1 / 3</p>
+      <h2 class="step-q">你怎麼喝咖啡？</h2>
+      <p class="step-hint">不同的沖煮方式，適合不同特性的豆子。</p>
+    </div>
+    <div class="options">
+      <div class="opt" data-val="espresso" onclick="select(this,1)">
+        <div class="opt-icon">☕</div>
+        <div class="opt-body">
+          <div class="opt-name">義式機 / 膠囊機</div>
+          <div class="opt-desc">用高壓萃取，適合中深焙。奶咖或直飲都行。</div>
+        </div>
+        <div class="opt-check">✓</div>
+      </div>
+      <div class="opt" data-val="filter" onclick="select(this,1)">
+        <div class="opt-icon">🫗</div>
+        <div class="opt-body">
+          <div class="opt-name">手沖 / 濾杯</div>
+          <div class="opt-desc">慢萃，風味細節更清楚。從淺到深烘都合適。</div>
+        </div>
+        <div class="opt-check">✓</div>
+      </div>
+      <div class="opt" data-val="moka" onclick="select(this,1)">
+        <div class="opt-icon">🫖</div>
+        <div class="opt-body">
+          <div class="opt-name">摩卡壺 / 法壓壺</div>
+          <div class="opt-desc">口感厚實，適合中深焙。喜歡濃一點的人。</div>
+        </div>
+        <div class="opt-check">✓</div>
+      </div>
+      <div class="opt" data-val="cold" onclick="select(this,1)">
+        <div class="opt-icon">🧊</div>
+        <div class="opt-body">
+          <div class="opt-name">冷泡 / 冰咖啡</div>
+          <div class="opt-desc">低溫長時間萃取，偏甜、低酸，很好喝。</div>
+        </div>
+        <div class="opt-check">✓</div>
+      </div>
+    </div>
+    <div class="next-wrap">
+      <button class="next-btn" id="next1" onclick="goNext(2)">繼續 →</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 2: 身體偏好 -->
+  <div class="screen" id="s2">
+    <div class="step-header">
+      <p class="step-tag">Step 2 / 3</p>
+      <h2 class="step-q">喝完你想要什麼感覺？</h2>
+      <p class="step-hint">不是風味描述，是身體的狀態。</p>
+    </div>
+    <div class="options">
+      <div class="opt" data-val="focus" onclick="select(this,2)">
+        <div class="opt-icon">⚡</div>
+        <div class="opt-body">
+          <div class="opt-name">清醒、專注</div>
+          <div class="opt-desc">工作前、需要進入狀態的時候。要清透、不要膩。</div>
+        </div>
+        <div class="opt-check">✓</div>
+      </div>
+      <div class="opt" data-val="relax" onclick="select(this,2)">
+        <div class="opt-icon">🌊</div>
+        <div class="opt-body">
+          <div class="opt-name">放鬆、陪伴</div>
+          <div class="opt-desc">下午、放空的時候。要有溫度，不要太刺激。</div>
+        </div>
+        <div class="opt-check">✓</div>
+      </div>
+      <div class="opt" data-val="explore" onclick="select(this,2)">
+        <div class="opt-icon">🔍</div>
+        <div class="opt-body">
+          <div class="opt-name">好奇、想試試看</div>
+          <div class="opt-desc">有個性一點沒關係，想感受咖啡不一樣的可能。</div>
+        </div>
+        <div class="opt-check">✓</div>
+      </div>
+      <div class="opt" data-val="comfort" onclick="select(this,2)">
+        <div class="opt-icon">🫂</div>
+        <div class="opt-body">
+          <div class="opt-name">熟悉、不要驚喜</div>
+          <div class="opt-desc">就是那個味道，不要太酸也不要太苦，對就好。</div>
+        </div>
+        <div class="opt-check">✓</div>
+      </div>
+    </div>
+    <div class="next-wrap">
+      <button class="next-btn" id="next2" onclick="goNext(3)">繼續 →</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 3: 酸苦偏好 -->
+  <div class="screen" id="s3">
+    <div class="step-header">
+      <p class="step-tag">Step 3 / 3</p>
+      <h2 class="step-q">你跟酸的關係怎樣？</h2>
+      <p class="step-hint">咖啡的酸不是壞的，是風味的一部分。但每個人的接受度不同。</p>
+    </div>
+    <div class="options">
+      <div class="opt" data-val="love-acid" onclick="select(this,3)">
+        <div class="opt-icon">🍋</div>
+        <div class="opt-body">
+          <div class="opt-name">喜歡，像果汁那種感覺</div>
+          <div class="opt-desc">明亮的酸讓咖啡有活力，喝起來很有精神。</div>
+        </div>
+        <div class="opt-check">✓</div>
+      </div>
+      <div class="opt" data-val="ok-acid" onclick="select(this,3)">
+        <div class="opt-icon">🍊</div>
+        <div class="opt-body">
+          <div class="opt-name">還好，有一點沒關係</div>
+          <div class="opt-desc">不特別喜歡也不排斥，平衡就好。</div>
+        </div>
+        <div class="opt-check">✓</div>
+      </div>
+      <div class="opt" data-val="no-acid" onclick="select(this,3)">
+        <div class="opt-icon">🍫</div>
+        <div class="opt-body">
+          <div class="opt-name">不太喜歡，越少越好</div>
+          <div class="opt-desc">喝咖啡就是要那個深沉的厚度，不是酸的。</div>
+        </div>
+        <div class="opt-check">✓</div>
+      </div>
+    </div>
+    <div class="next-wrap">
+      <button class="next-btn" id="next3" onclick="showResult()">看看適合我的豆子 →</button>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="screen" id="sResult">
+    <div class="result-header">
+      <p class="result-tag">你的選擇</p>
+      <h2 class="result-title" id="resultTitle">最適合你的是</h2>
+      <p class="result-sub" id="resultSub"></p>
+    </div>
+
+    <div class="result-card">
+      <div class="result-card-top">
+        <p class="result-card-label">推薦豆款</p>
+        <p class="result-card-name" id="recName">—</p>
+        <p class="result-card-origin" id="recOrigin">—</p>
+      </div>
+      <div class="result-card-body">
+        <p class="result-reason" id="recReason">—</p>
+        <p class="result-price" id="recPrice">—</p>
+      </div>
+    </div>
+
+    <p class="also-label" id="alsoLabel"></p>
+    <div class="also-cards" id="alsoCards"></div>
+
+    <div class="result-ctas">
+      <a href="https://theatre.1shop.tw/coffee" class="cta-primary">前往選購</a>
+      <span class="cta-secondary" onclick="restart()">重新選一次</span>
+    </div>
+  </div>
+
+</main>
+
+<script>
+const ans = { s1: null, s2: null, s3: null };
+
+const beans = {
+  floral: {
+    name: '百香圓舞曲', origin: 'Ethiopia Yirgacheffe · Natural · 淺焙',
+    price: 'NT$750 / 200g',
+    reason: '你喜歡清透、有活力的感覺，這支的熱帶水果香和明亮果酸剛好對應。<strong>喝完清醒，不會心悸。</strong>'
+  },
+  natural: {
+    name: '葡萄蜜糖', origin: 'Rwanda Gatezi · Anaerobic · 淺焙',
+    price: 'NT$750 / 200g',
+    reason: '特殊發酵帶來的果乾甜感，有個性但不過分。<strong>第一次喝到這種風味的人通常會很驚喜。</strong>'
+  },
+  balanced: {
+    name: '花神', origin: 'Guatemala Antigua · Washed · 中焙',
+    price: 'NT$400 / 200g',
+    reason: '不酸不苦，有點堅果的甜感。<strong>最容易被忽略、但最適合日常的一支。</strong>'
+  },
+  dark: {
+    name: '綠寶石', origin: 'Indonesia Mandheling · Wet-hulled · 中深焙',
+    price: 'NT$450 / 200g',
+    reason: '厚實的口感，低酸，帶點木質感。<strong>加奶或直飲都好，不會讓你胃不舒服。</strong>'
+  }
+};
+
+function getResult() {
+  const brew = ans.s1, feel = ans.s2, acid = ans.s3;
+  if (acid === 'love-acid' || feel === 'explore') return 'natural';
+  if (acid === 'no-acid' || brew === 'espresso' || brew === 'moka') return 'dark';
+  if (feel === 'focus') return 'floral';
+  return 'balanced';
+}
+
+function getAlso(main) {
+  const all = ['floral','natural','balanced','dark'];
+  return all.filter(k => k !== main).slice(0, 2).map(k => ({
+    ...beans[k],
+    key: k
+  }));
+}
+
+const alsoNames = { floral:'細緻淡雅', natural:'果乾酒香', balanced:'日常平衡', dark:'濃郁苦甜' };
+const alsoDescs = {
+  floral: '花香、柑橘、明亮果酸',
+  natural: '莓果、熱帶、發酵甜',
+  balanced: '堅果、焦糖、圓潤',
+  dark: '厚實、木質、低酸'
+};
+
+function select(el, step) {
+  el.closest('.options').querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  ans['s'+step] = el.dataset.val;
+  document.getElementById('next'+step).classList.add('ready');
+}
+
+function goNext(to) {
+  const from = to - 1;
+  const cur = document.getElementById('s'+from);
+  const next = document.getElementById('s'+to);
+  cur.classList.add('exit');
+  cur.classList.remove('active');
+  setTimeout(() => cur.classList.remove('exit'), 400);
+  next.classList.add('active');
+  document.getElementById('progressBar').style.width = ((to-1)/3*100)+'%';
+  document.getElementById('backBtn').classList.add('visible');
+  window.currentScreen = to;
+}
+
+function showResult() {
+  const cur = document.getElementById('s3');
+  const res = document.getElementById('sResult');
+  cur.classList.add('exit');
+  cur.classList.remove('active');
+  setTimeout(() => cur.classList.remove('exit'), 400);
+  res.classList.add('active');
+  document.getElementById('progressBar').style.width = '100%';
+
+  const key = getResult();
+  const b = beans[key];
+  document.getElementById('recName').textContent = b.name;
+  document.getElementById('recOrigin').textContent = b.origin;
+  document.getElementById('recReason').innerHTML = b.reason;
+  document.getElementById('recPrice').textContent = b.price;
+  document.getElementById('resultSub').textContent = '根據你的沖煮方式和偏好，我挑了這支。';
+
+  const also = getAlso(key);
+  document.getElementById('alsoLabel').textContent = '也可以考慮';
+  document.getElementById('alsoCards').innerHTML = also.map(a => `
+    <div class="also-card">
+      <div>
+        <div class="also-name">${a.name}</div>
+        <div class="also-desc">${alsoDescs[a.key]}</div>
+      </div>
+      <div class="also-price">${a.price}</div>
+    </div>
+  `).join('');
+  window.currentScreen = 'result';
+}
+
+function goBack() {
+  if (!window.currentScreen || window.currentScreen === 1) return;
+  const screens = [1,2,3,'result'];
+  const idx = screens.indexOf(window.currentScreen);
+  if (idx <= 0) return;
+  const prev = screens[idx-1];
+  const cur = window.currentScreen === 'result' ? document.getElementById('sResult') : document.getElementById('s'+window.currentScreen);
+  const prevEl = document.getElementById('s'+prev);
+  cur.classList.remove('active');
+  cur.style.transform = 'translateX(32px)';
+  setTimeout(() => cur.style.transform = '', 400);
+  prevEl.classList.add('active');
+  document.getElementById('progressBar').style.width = ((prev-1)/3*100)+'%';
+  if (prev === 1) document.getElementById('backBtn').classList.remove('visible');
+  window.currentScreen = prev;
+}
+
+function restart() {
+  ans.s1 = null; ans.s2 = null; ans.s3 = null;
+  ['s1','s2','s3','sResult'].forEach(id => {
+    const el = document.getElementById(id);
+    el.classList.remove('active','exit');
+    el.style.transform = '';
+  });
+  document.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+  ['next1','next2','next3'].forEach(id => document.getElementById(id).classList.remove('ready'));
+  document.getElementById('s1').classList.add('active');
+  document.getElementById('progressBar').style.width = '0%';
+  document.getElementById('backBtn').classList.remove('visible');
+  window.currentScreen = 1;
+}
+
+window.currentScreen = 1;
+</script>
+</body>
+</html>

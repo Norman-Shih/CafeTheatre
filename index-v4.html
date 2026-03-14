@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>咖啡小劇場 — 內湖自烘</title>
+<meta name="description" content="內湖自烘。不賣產地故事，只賣不讓你不舒服的咖啡。">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+TC:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #080808;
+  --surface: #111111;
+  --surface2: #181818;
+  --ink: #f0f0f0;
+  --ink-mid: #777;
+  --ink-dim: #333;
+  --rule: #1c1c1c;
+  --accent: #e8ff00;
+}
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Noto Sans TC', sans-serif;
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* NOISE */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* NAV */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 500;
+  height: 52px;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--rule);
+  background: rgba(8,8,8,0.94);
+  backdrop-filter: blur(20px);
+}
+.nav-logo {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-decoration: none;
+}
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+.nav-link {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.nav-link:hover { color: var(--ink); }
+.nav-link.accent {
+  color: var(--bg);
+  background: var(--accent);
+  padding: 5px 14px;
+  border-radius: 2px;
+  transition: opacity 0.15s;
+}
+.nav-link.accent:hover { opacity: 0.85; color: var(--bg); }
+
+/* TICKER */
+.ticker-wrap {
+  margin-top: 52px;
+  border-bottom: 1px solid var(--rule);
+  overflow: hidden;
+  padding: 10px 0;
+  background: var(--surface);
+}
+.ticker {
+  display: flex;
+  white-space: nowrap;
+  animation: tick 32s linear infinite;
+}
+.ticker-inner {
+  display: flex;
+  flex-shrink: 0;
+}
+.ticker-item {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  padding: 0 36px;
+  border-right: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ticker-dot {
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+@keyframes tick {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* OPENING — no hero, straight into content */
+.opening {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: calc(100vh - 52px - 41px);
+  border-bottom: 1px solid var(--rule);
+}
+
+/* LEFT — identity, minimal */
+.opening-left {
+  padding: 64px 48px;
+  border-right: 1px solid var(--rule);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+.opening-left::before {
+  content: 'THEATRE';
+  position: absolute;
+  bottom: -20px;
+  left: -10px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(100px, 18vw, 220px);
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255,255,255,0.03);
+  pointer-events: none;
+  user-select: none;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.opening-top {}
+.opening-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 40px;
+}
+.opening-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3.5rem, 8vw, 7rem);
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.opening-title .hi { color: var(--accent); }
+
+.opening-bottom {
+  position: relative;
+  z-index: 1;
+}
+.opening-desc {
+  font-size: 0.88rem;
+  line-height: 1.9;
+  color: var(--ink-mid);
+  max-width: 320px;
+  margin-bottom: 40px;
+}
+.opening-desc strong { color: var(--ink); font-weight: 400; }
+
+.opening-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+}
+.btn {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 12px 28px;
+  border-radius: 2px;
+  transition: opacity 0.15s, background 0.15s, color 0.15s;
+  display: inline-block;
+}
+.btn-accent { background: var(--accent); color: var(--bg); }
+.btn-accent:hover { opacity: 0.85; }
+.btn-ghost { border: 1px solid var(--rule); color: var(--ink-mid); background: transparent; }
+.btn-ghost:hover { border-color: var(--ink-dim); color: var(--ink); }
+
+/* RIGHT — current beans, live */
+.opening-right {
+  display: flex;
+  flex-direction: column;
+}
+.beans-header {
+  padding: 32px 40px 20px;
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.beans-header-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+.beans-header-link {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  text-decoration: none;
+  transition: opacity 0.15s;
+}
+.beans-header-link:hover { opacity: 0.7; }
+
+.bean-list { flex: 1; }
+
+.bean-row {
+  padding: 24px 40px;
+  border-bottom: 1px solid var(--rule);
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  gap: 20px;
+  align-items: start;
+  cursor: default;
+  transition: background 0.15s;
+  text-decoration: none;
+  color: inherit;
+  display: grid;
+}
+.bean-row:hover { background: var(--surface); }
+.bean-row:hover .bean-arrow { opacity: 1; transform: translateX(0); }
+
+.bean-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem;
+  color: var(--ink-dim);
+  padding-top: 3px;
+  letter-spacing: 0.05em;
+}
+.bean-body {}
+.bean-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem;
+  letter-spacing: 0.03em;
+  color: var(--ink);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.bean-voice {
+  font-size: 0.8rem;
+  color: var(--ink-mid);
+  line-height: 1.6;
+  margin-bottom: 8px;
+  font-style: italic;
+}
+.bean-meta {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+.bean-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  padding-top: 4px;
+}
+.bean-price {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--ink-mid);
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+.bean-arrow {
+  font-size: 0.75rem;
+  color: var(--accent);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity 0.15s, transform 0.15s;
+}
+.bean-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.52rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid var(--ink-dim);
+  color: var(--ink-dim);
+  padding: 2px 7px;
+  border-radius: 2px;
+}
+.bean-tag.new { border-color: var(--accent); color: var(--accent); }
+
+/* SPLIT LOWER SECTION */
+.lower {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  border-bottom: 1px solid var(--rule);
+}
+.lower-cell {
+  padding: 48px 40px;
+  border-right: 1px solid var(--rule);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 280px;
+}
+.lower-cell:last-child { border-right: none; }
+
+.cell-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 24px;
+}
+.cell-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  line-height: 1;
+  color: var(--ink);
+  margin-bottom: 16px;
+  letter-spacing: 0.01em;
+}
+.cell-body {
+  font-size: 0.82rem;
+  line-height: 1.8;
+  color: var(--ink-mid);
+  flex: 1;
+  margin-bottom: 28px;
+}
+
+/* SUBSCRIBE CELL — accent bg */
+.lower-cell.subscribe-cell {
+  background: var(--accent);
+}
+.lower-cell.subscribe-cell .cell-label { color: rgba(8,8,8,0.45); }
+.lower-cell.subscribe-cell .cell-title { color: var(--bg); }
+.lower-cell.subscribe-cell .cell-body { color: rgba(8,8,8,0.6); }
+
+.btn-dark {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 12px 24px;
+  border-radius: 2px;
+  background: var(--bg);
+  color: var(--ink);
+  display: inline-block;
+  transition: opacity 0.15s;
+  align-self: flex-start;
+}
+.btn-dark:hover { opacity: 0.8; }
+
+/* VOICE SECTION — Norman speaks */
+.voice-section {
+  padding: 64px 48px;
+  border-bottom: 1px solid var(--rule);
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 64px;
+  align-items: start;
+}
+.voice-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  padding-top: 6px;
+}
+.voice-posts {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.voice-post {
+  padding: 28px 0;
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 40px;
+}
+.voice-post:first-child { padding-top: 0; }
+.voice-post:last-child { border-bottom: none; }
+.voice-text {
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--ink-mid);
+  max-width: 600px;
+}
+.voice-text strong { color: var(--ink); font-weight: 400; }
+.voice-date {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-dim);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* FOOTER */
+footer {
+  padding: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.footer-logo {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+.footer-links {
+  display: flex;
+  gap: 28px;
+  list-style: none;
+}
+.footer-links a {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.footer-links a:hover { color: var(--ink); }
+.footer-loc {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-dim);
+}
+
+/* PAGE LOAD ANIMATION */
+.fade-in {
+  opacity: 0;
+  transform: translateY(16px);
+  animation: fadein 0.7s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+.fade-in:nth-child(1) { animation-delay: 0.1s; }
+.fade-in:nth-child(2) { animation-delay: 0.22s; }
+.fade-in:nth-child(3) { animation-delay: 0.34s; }
+@keyframes fadein {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 860px) {
+  nav { padding: 0 20px; }
+  .nav-right .nav-link:not(.accent) { display: none; }
+  .opening { grid-template-columns: 1fr; min-height: auto; }
+  .opening-left { padding: 48px 24px; border-right: none; border-bottom: 1px solid var(--rule); min-height: 60vh; }
+  .opening-right {}
+  .bean-row { padding: 20px 24px; }
+  .beans-header { padding: 24px 24px 16px; }
+  .lower { grid-template-columns: 1fr; }
+  .lower-cell { border-right: none; border-bottom: 1px solid var(--rule); min-height: auto; padding: 40px 24px; }
+  .lower-cell:last-child { border-bottom: none; }
+  .voice-section { grid-template-columns: 1fr; gap: 24px; padding: 48px 24px; }
+  footer { padding: 24px; flex-direction: column; align-items: flex-start; gap: 20px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-logo">咖啡小劇場</a>
+  <div class="nav-right">
+    <a href="https://theatre.1shop.tw/coffee" class="nav-link">豆款</a>
+    <a href="#subscribe" class="nav-link">月訂</a>
+    <a href="https://theatre.1shop.tw/location" class="nav-link">門市</a>
+    <a href="https://theatre.1shop.tw/coffee" class="nav-link accent">選豆</a>
+  </div>
+</nav>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <div class="ticker-inner">
+      <div class="ticker-item"><span class="ticker-dot"></span>內湖自烘</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>不苦．不鎖喉</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>每月 8–10 款輪替</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Google 4.8 ★</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>市場在賣產地，我在解決瑕疵</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>每月選豆服務開放中</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Tue – Sun</div>
+    </div>
+    <div class="ticker-inner" aria-hidden="true">
+      <div class="ticker-item"><span class="ticker-dot"></span>內湖自烘</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>不苦．不鎖喉</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>每月 8–10 款輪替</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Google 4.8 ★</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>市場在賣產地，我在解決瑕疵</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>每月選豆服務開放中</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Tue – Sun</div>
+    </div>
+  </div>
+</div>
+
+<!-- OPENING — identity left, beans right -->
+<section class="opening">
+  <div class="opening-left">
+    <div class="opening-top fade-in">
+      <p class="opening-label">Coffee Theatre — Neihu Taipei</p>
+      <h1 class="opening-title">
+        你選<br>
+        方向<span class="hi">。</span><br>
+        我來<br>
+        挑豆<span class="hi">。</span>
+      </h1>
+    </div>
+    <div class="opening-bottom fade-in">
+      <p class="opening-desc">
+        不需要懂咖啡。<br>
+        告訴我你喜歡什麼感覺，<br>
+        <strong>其他交給我。</strong>
+      </p>
+      <div class="opening-actions">
+        <a href="https://theatre.1shop.tw/coffee" class="btn btn-accent">看今季豆款</a>
+        <a href="#subscribe" class="btn btn-ghost">每月選豆服務</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="opening-right fade-in">
+    <div class="beans-header">
+      <span class="beans-header-label">現在在烘的</span>
+      <a href="https://theatre.1shop.tw/coffee" class="beans-header-link">全部豆款 →</a>
+    </div>
+    <div class="bean-list">
+      <a href="https://theatre.1shop.tw/coffee" class="bean-row">
+        <span class="bean-num">01</span>
+        <div class="bean-body">
+          <div class="bean-name">百香圓舞曲</div>
+          <div class="bean-voice">喝這支的時候會忘記在想什麼事。</div>
+          <div class="bean-meta">Ethiopia · Natural · 淺焙</div>
+        </div>
+        <div class="bean-right">
+          <span class="bean-price">NT$750</span>
+          <span class="bean-tag new">New</span>
+          <span class="bean-arrow">→</span>
+        </div>
+      </a>
+      <a href="https://theatre.1shop.tw/coffee" class="bean-row">
+        <span class="bean-num">02</span>
+        <div class="bean-body">
+          <div class="bean-name">葡萄蜜糖</div>
+          <div class="bean-voice">發酵感剛好在邊界上，這支沒有過。</div>
+          <div class="bean-meta">Rwanda · Anaerobic · 淺焙</div>
+        </div>
+        <div class="bean-right">
+          <span class="bean-price">NT$750</span>
+          <span class="bean-arrow">→</span>
+        </div>
+      </a>
+      <a href="https://theatre.1shop.tw/coffee" class="bean-row">
+        <span class="bean-num">03</span>
+        <div class="bean-body">
+          <div class="bean-name">綠寶石</div>
+          <div class="bean-voice">給不想被花香說服的人。</div>
+          <div class="bean-meta">Indonesia · Wet-hulled · 中焙</div>
+        </div>
+        <div class="bean-right">
+          <span class="bean-price">NT$450</span>
+          <span class="bean-arrow">→</span>
+        </div>
+      </a>
+      <a href="https://theatre.1shop.tw/coffee" class="bean-row">
+        <span class="bean-num">04</span>
+        <div class="bean-body">
+          <div class="bean-name">花神</div>
+          <div class="bean-voice">最容易被忽略，值得被認真喝一次。</div>
+          <div class="bean-meta">Guatemala · Washed · 中焙</div>
+        </div>
+        <div class="bean-right">
+          <span class="bean-price">NT$400</span>
+          <span class="bean-arrow">→</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- LOWER THREE CELLS -->
+<section class="lower">
+  <div class="lower-cell">
+    <div>
+      <p class="cell-label">來店</p>
+      <h2 class="cell-title">帶著電腦來，或者只是想喝一杯。</h2>
+    </div>
+    <p class="cell-body">台北內湖，週二到週日。不需要預約，不需要消費多少。</p>
+    <a href="https://theatre.1shop.tw/location" class="btn btn-ghost">門市資訊</a>
+  </div>
+
+  <div class="lower-cell subscribe-cell" id="subscribe">
+    <div>
+      <p class="cell-label">每月選豆</p>
+      <h2 class="cell-title">這個決定做一次，不用再想。</h2>
+    </div>
+    <p class="cell-body">你選方向，我選豆子。每月烘好主動通知。兩包起，隨時可以暫停。</p>
+    <a href="/subscribe-f.html" class="btn-dark">開始訂閱</a>
+  </div>
+
+  <div class="lower-cell">
+    <div>
+      <p class="cell-label">選豆</p>
+      <h2 class="cell-title">不想研究，直接告訴我你喜歡什麼。</h2>
+    </div>
+    <p class="cell-body">花香淡雅、果乾酒香、濃郁苦甜。選一個方向，其他交給我。</p>
+    <a href="https://theatre.1shop.tw/coffee" class="btn btn-ghost">看所有豆款</a>
+  </div>
+</section>
+
+<!-- VOICE — Norman speaks -->
+<section class="voice-section">
+  <p class="voice-label">Norman 說</p>
+  <div class="voice-posts">
+    <div class="voice-post">
+      <p class="voice-text"><strong>產地標示不是資訊，是服務。</strong>你想看到什麼，就給你看到什麼。</p>
+      <span class="voice-date">最近</span>
+    </div>
+    <div class="voice-post">
+      <p class="voice-text">不苦、不鎖喉。這是我對每支豆子的<strong>最低標準</strong>，不是加分項。</p>
+      <span class="voice-date">上週</span>
+    </div>
+    <div class="voice-post">
+      <p class="voice-text">第三波精品咖啡的敘事在幫上游打工。<strong>我的工作是解決瑕疵，不是翻譯產地故事。</strong></p>
+      <span class="voice-date">本月</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="footer-logo">咖啡小劇場 · Coffee Theatre</span>
+  <ul class="footer-links">
+    <li><a href="https://www.instagram.com/cafetheatre.tw">Instagram</a></li>
+    <li><a href="https://portaly.cc/theatre">Portaly</a></li>
+    <li><a href="https://theatre.1shop.tw/QA">FAQ</a></li>
+  </ul>
+  <span class="footer-loc">台北內湖 · Tue–Sun</span>
+</footer>
+
+</body>
+</html>
