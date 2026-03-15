@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>咖啡小劇場 — 內湖自烘</title>
+<meta name="description" content="精品咖啡的完整資訊，加上一層讓你直接懂的翻譯。內湖自烘。">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Serif+TC:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg:       #ffffff;
+  --bg-soft:  #f8f6f2;
+  --bg-warm:  #fdf8f2;
+  --ink:      #111010;
+  --ink-mid:  #3c3830;
+  --ink-sub:  #6a6258;
+  --ink-dim:  #aaa090;
+  --rule:     #e4e0d8;
+  --warm:     #5c3d1e;
+  --warm-2:   #7a4e24;
+  --warm-3:   #c8956a;
+  --warm-bg:  #fdf4ec;
+  --green:    #2a5c3f;
+  --green-bg: #f0f7f3;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+  height: 56px; padding: 0 40px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--rule);
+  background: rgba(255,255,255,0.96);
+  backdrop-filter: blur(20px);
+}
+.nav-logo {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 400; font-size: 0.92rem;
+  letter-spacing: 0.04em; color: var(--ink); text-decoration: none;
+}
+.nav-links { display: flex; align-items: center; gap: 28px; }
+.nav-link {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--ink-sub);
+  text-decoration: none; transition: color 0.15s;
+}
+.nav-link:hover { color: var(--ink); }
+.nav-cta {
+  color: #fff !important;
+  background: var(--ink); padding: 7px 18px;
+  transition: background 0.15s !important;
+}
+.nav-cta:hover { background: var(--warm) !important; }
+
+/* ── TICKER ── */
+.ticker-wrap {
+  margin-top: 56px; border-bottom: 1px solid var(--rule);
+  overflow: hidden; padding: 10px 0; background: var(--bg-soft);
+}
+.ticker { display: flex; white-space: nowrap; animation: tick 44s linear infinite; }
+.ticker-inner { display: flex; flex-shrink: 0; }
+.t-item {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--ink-dim);
+  padding: 0 32px; border-right: 1px solid var(--rule);
+  display: flex; align-items: center; gap: 8px;
+}
+.t-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--warm-2); flex-shrink: 0; }
+@keyframes tick { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* ── OPENING ── */
+.opening {
+  display: grid; grid-template-columns: 5fr 7fr;
+  min-height: calc(100vh - 98px);
+  border-bottom: 1px solid var(--rule);
+}
+
+.opening-left {
+  padding: 64px 52px 64px;
+  border-right: 1px solid var(--rule);
+  display: flex; flex-direction: column;
+  justify-content: space-between;
+  background: var(--bg);
+  position: relative; overflow: hidden;
+}
+.opening-left::after {
+  content: 'CT';
+  position: absolute; bottom: -16px; right: -8px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(120px, 20vw, 240px);
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(92,61,30,0.055);
+  pointer-events: none; user-select: none; line-height: 1;
+}
+
+.ol-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--ink-dim);
+  margin-bottom: 36px;
+  opacity: 0; animation: rise 0.9s cubic-bezier(0.16,1,0.3,1) 0.1s forwards;
+}
+.ol-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3rem, 6.5vw, 5.8rem);
+  line-height: 0.92; letter-spacing: -0.01em; color: var(--ink);
+  opacity: 0; animation: rise 0.9s cubic-bezier(0.16,1,0.3,1) 0.2s forwards;
+}
+.ol-title .accent { color: var(--warm-2); }
+
+.ol-bottom {
+  position: relative; z-index: 1;
+  opacity: 0; animation: rise 0.9s cubic-bezier(0.16,1,0.3,1) 0.34s forwards;
+}
+.ol-desc {
+  font-size: 0.95rem; line-height: 1.9;
+  color: var(--ink-mid); margin-bottom: 32px; max-width: 300px;
+}
+.ol-desc strong { color: var(--ink); font-weight: 400; }
+
+.ol-actions { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+
+.btn {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem; letter-spacing: 0.12em;
+  text-transform: uppercase; text-decoration: none;
+  padding: 13px 26px; display: inline-block;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.btn-ink { background: var(--ink); color: #fff; }
+.btn-ink:hover { background: var(--warm); }
+.btn-outline { border: 1px solid var(--rule); color: var(--ink-sub); }
+.btn-outline:hover { border-color: var(--ink-sub); color: var(--ink); }
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── BEAN LIST — dual track ── */
+.opening-right { display: flex; flex-direction: column; background: var(--bg); }
+
+.beans-bar {
+  padding: 24px 40px 16px; border-bottom: 1px solid var(--rule);
+  display: flex; justify-content: space-between; align-items: baseline;
+}
+.beans-bar-label {
+  font-family: 'DM Mono', monospace; font-size: 0.58rem;
+  letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-dim);
+}
+.beans-bar-link {
+  font-family: 'DM Mono', monospace; font-size: 0.56rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--warm-2); text-decoration: none; transition: opacity 0.15s;
+}
+.beans-bar-link:hover { opacity: 0.65; }
+
+/* column headers */
+.beans-cols-header {
+  display: grid;
+  grid-template-columns: 28px 1fr 96px 80px;
+  gap: 16px; padding: 10px 40px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--bg-soft);
+}
+.bch {
+  font-family: 'DM Mono', monospace; font-size: 0.5rem;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-dim);
+}
+.bch-right { text-align: right; }
+
+.bean-row {
+  padding: 22px 40px; border-bottom: 1px solid var(--rule);
+  display: grid;
+  grid-template-columns: 28px 1fr 96px 80px;
+  gap: 16px; align-items: center;
+  text-decoration: none; color: inherit;
+  transition: background 0.15s; position: relative;
+}
+.bean-row::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 2px; background: var(--warm-2);
+  transform: scaleY(0); transform-origin: bottom;
+  transition: transform 0.28s cubic-bezier(0.16,1,0.3,1);
+}
+.bean-row:hover { background: var(--warm-bg); }
+.bean-row:hover::before { transform: scaleY(1); }
+.bean-row:hover .b-arrow { opacity: 1; }
+
+.b-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.52rem; color: var(--ink-dim); letter-spacing: 0.06em;
+}
+
+/* dual-track bean info */
+.b-info { display: flex; flex-direction: column; gap: 4px; }
+.b-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.4rem; letter-spacing: 0.02em;
+  color: var(--ink); line-height: 1;
+}
+/* track 1: expert — spec */
+.b-spec {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.52rem; letter-spacing: 0.07em;
+  text-transform: uppercase; color: var(--ink-dim);
+  line-height: 1.5;
+}
+/* track 2: layman — feel */
+.b-feel {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 0.8rem; font-style: italic;
+  color: var(--warm-2); line-height: 1.4;
+}
+
+/* roast badge */
+.b-roast {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.52rem; letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 10px; border-radius: 2px;
+  white-space: nowrap; text-align: center;
+  align-self: center;
+}
+.roast-light  { background: var(--green-bg); color: var(--green); border: 1px solid #c8e0d4; }
+.roast-medium { background: var(--warm-bg);  color: var(--warm-2); border: 1px solid #f0d4b8; }
+.roast-dark   { background: #f5f0eb; color: var(--warm); border: 1px solid #ddd0c0; }
+
+.b-right-col { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.b-price {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem; color: var(--ink-mid); white-space: nowrap;
+}
+.b-arrow {
+  font-size: 0.65rem; color: var(--warm-2);
+  opacity: 0; transition: opacity 0.15s;
+}
+.b-new {
+  font-family: 'DM Mono', monospace; font-size: 0.48rem;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  border: 1px solid var(--warm-2); color: var(--warm-2); padding: 2px 6px;
+}
+
+/* ── THREE PATHS ── */
+.paths {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  border-bottom: 1px solid var(--rule);
+}
+.path {
+  padding: 48px 44px; border-right: 1px solid var(--rule);
+  display: flex; flex-direction: column;
+  justify-content: space-between; min-height: 280px;
+}
+.path:last-child { border-right: none; }
+
+.path-label {
+  font-family: 'DM Mono', monospace; font-size: 0.56rem;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--ink-dim); margin-bottom: 20px;
+}
+.path-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(1.6rem, 2.8vw, 2.4rem);
+  line-height: 1; color: var(--ink); margin-bottom: 16px;
+}
+.path-body {
+  font-size: 0.9rem; line-height: 1.85;
+  color: var(--ink-mid); flex: 1; margin-bottom: 28px;
+}
+
+.path-subscribe { background: var(--ink); border-right-color: var(--ink); }
+.path-subscribe .path-label { color: rgba(255,255,255,0.28); }
+.path-subscribe .path-title { color: #fff; }
+.path-subscribe .path-body  { color: rgba(255,255,255,0.52); }
+
+.btn-white {
+  font-family: 'DM Mono', monospace; font-size: 0.62rem;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  text-decoration: none; padding: 13px 24px;
+  display: inline-block; background: #fff; color: var(--ink);
+  transition: background 0.15s; align-self: flex-start;
+}
+.btn-white:hover { background: var(--bg-soft); }
+
+/* ── THE BRIEF ── */
+.brief { border-bottom: 1px solid var(--rule); }
+
+.brief-header {
+  padding: 60px 52px 44px; border-bottom: 1px solid var(--rule);
+  display: grid; grid-template-columns: 160px 1fr;
+  gap: 48px; align-items: baseline;
+}
+.brief-eyebrow {
+  font-family: 'DM Mono', monospace; font-size: 0.58rem;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-dim);
+  padding-top: 8px;
+}
+.brief-headline {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(1.8rem, 3.4vw, 3rem);
+  line-height: 1; color: var(--ink);
+}
+
+.brief-grid { display: grid; grid-template-columns: repeat(3,1fr); }
+
+.brief-card {
+  padding: 44px 44px 56px; border-right: 1px solid var(--rule);
+  position: relative;
+}
+.brief-card:last-child { border-right: none; }
+.brief-card::before {
+  content: ''; position: absolute; top: 0; left: 44px; right: 44px;
+  height: 1px; background: var(--warm-2);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+.brief-card:hover::before { transform: scaleX(1); }
+
+.bc-topic {
+  font-family: 'DM Mono', monospace; font-size: 0.56rem;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--warm-2); margin-bottom: 20px;
+}
+.bc-title {
+  font-family: 'Noto Serif TC', serif; font-weight: 500;
+  font-size: 1.05rem; color: var(--ink); line-height: 1.5;
+  margin-bottom: 18px;
+}
+.bc-rule { width: 24px; height: 1px; background: var(--ink-dim); margin-bottom: 18px; }
+.bc-body {
+  font-family: 'Noto Serif TC', serif; font-weight: 300;
+  font-size: 0.9rem; line-height: 1.95; color: var(--ink-mid);
+}
+.bc-body strong { color: var(--ink); font-weight: 400; }
+
+/* ── CODA ── */
+.coda {
+  padding: 88px 52px; border-bottom: 1px solid var(--rule);
+  display: grid; grid-template-columns: 160px 1fr;
+  gap: 64px; align-items: center;
+}
+.coda-label {
+  font-family: 'DM Mono', monospace; font-size: 0.56rem;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-dim);
+}
+.coda-text {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2rem, 4.2vw, 3.8rem);
+  line-height: 1; color: var(--ink);
+}
+.coda-text .accent { color: var(--warm-2); }
+
+/* ── FOOTER ── */
+footer {
+  padding: 32px 40px; display: flex;
+  justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 16px;
+}
+.footer-logo {
+  font-family: 'Noto Serif TC', serif; font-weight: 300;
+  font-size: 0.8rem; color: var(--ink-sub); letter-spacing: 0.04em;
+}
+.footer-links { display: flex; gap: 24px; list-style: none; }
+.footer-links a {
+  font-family: 'DM Mono', monospace; font-size: 0.56rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--ink-dim); text-decoration: none; transition: color 0.15s;
+}
+.footer-links a:hover { color: var(--ink); }
+.footer-loc {
+  font-family: 'DM Mono', monospace; font-size: 0.56rem;
+  letter-spacing: 0.1em; color: var(--ink-dim);
+}
+
+/* ══ MOBILE ══ */
+@media (max-width: 860px) {
+  nav { padding: 0 20px; }
+  .nav-links .nav-link:not(.nav-cta) { display: none; }
+
+  .t-item { font-size: 0.64rem; padding: 0 24px; }
+
+  .opening { grid-template-columns: 1fr; min-height: auto; }
+  .opening-left {
+    padding: 48px 24px 52px;
+    border-right: none; border-bottom: 1px solid var(--rule);
+  }
+  .opening-left::after { font-size: 130px; }
+  .ol-eyebrow { font-size: 0.64rem; margin-bottom: 24px; }
+  .ol-title { font-size: clamp(3.2rem, 14vw, 4.8rem); }
+  .ol-desc { font-size: 1rem; line-height: 1.85; max-width: 100%; margin-bottom: 28px; }
+  .ol-actions { width: 100%; }
+  .btn { font-size: 0.7rem; padding: 15px 20px; width: 100%; text-align: center; }
+
+  /* bean list mobile: simplify grid */
+  .beans-bar { padding: 18px 24px 12px; }
+  .beans-cols-header { display: none; }
+  .bean-row {
+    padding: 20px 24px;
+    grid-template-columns: 22px 1fr auto;
+    gap: 14px;
+  }
+  .b-roast { display: none; }
+  .b-name  { font-size: 1.35rem; }
+  .b-spec  { font-size: 0.6rem; }
+  .b-feel  { font-size: 0.84rem; }
+  .b-price { font-size: 0.76rem; }
+  .b-arrow { opacity: 1; }
+
+  .paths { grid-template-columns: 1fr; }
+  .path {
+    border-right: none; border-bottom: 1px solid var(--rule);
+    min-height: auto; padding: 40px 24px;
+  }
+  .path:last-child { border-bottom: none; }
+  .path-title { font-size: clamp(1.7rem, 7vw, 2.3rem); }
+  .path-body  { font-size: 0.94rem; }
+  .btn-white  { width: 100%; text-align: center; padding: 15px 20px; }
+
+  .brief-header { grid-template-columns: 1fr; gap: 10px; padding: 44px 24px 32px; }
+  .brief-headline { font-size: clamp(1.7rem, 7vw, 2.6rem); }
+
+  .brief-grid { grid-template-columns: 1fr; }
+  .brief-card {
+    border-right: none; border-bottom: 1px solid var(--rule);
+    padding: 36px 24px 44px;
+  }
+  .brief-card:last-child { border-bottom: none; }
+  .brief-card::before { left: 24px; right: 24px; }
+  .bc-title { font-size: 1.05rem; }
+  .bc-body  { font-size: 0.94rem; line-height: 1.9; }
+
+  .coda { grid-template-columns: 1fr; gap: 12px; padding: 60px 24px; }
+  .coda-text { font-size: clamp(2rem, 9vw, 3rem); }
+
+  footer { padding: 28px 24px; flex-direction: column; align-items: flex-start; gap: 16px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-logo">咖啡小劇場</a>
+  <div class="nav-links">
+    <a href="https://theatre.1shop.tw/coffee" class="nav-link">豆款</a>
+    <a href="#subscribe" class="nav-link">月訂</a>
+    <a href="/guide-dark.html" class="nav-link">選豆指南</a>
+    <a href="https://theatre.1shop.tw/location" class="nav-link">門市</a>
+    <a href="https://theatre.1shop.tw/coffee" class="nav-link nav-cta">選豆</a>
+  </div>
+</nav>
+
+<div class="ticker-wrap">
+  <div class="ticker">
+    <div class="ticker-inner">
+      <div class="t-item"><span class="t-dot"></span>內湖自烘</div>
+      <div class="t-item"><span class="t-dot"></span>不苦 · 不鎖喉</div>
+      <div class="t-item"><span class="t-dot"></span>每月 8–10 款輪替</div>
+      <div class="t-item"><span class="t-dot"></span>Google 4.8 ★ · 220 則評論</div>
+      <div class="t-item"><span class="t-dot"></span>月訂開放中</div>
+      <div class="t-item"><span class="t-dot"></span>週二至週日</div>
+    </div>
+    <div class="ticker-inner" aria-hidden="true">
+      <div class="t-item"><span class="t-dot"></span>內湖自烘</div>
+      <div class="t-item"><span class="t-dot"></span>不苦 · 不鎖喉</div>
+      <div class="t-item"><span class="t-dot"></span>每月 8–10 款輪替</div>
+      <div class="t-item"><span class="t-dot"></span>Google 4.8 ★ · 220 則評論</div>
+      <div class="t-item"><span class="t-dot"></span>月訂開放中</div>
+      <div class="t-item"><span class="t-dot"></span>週二至週日</div>
+    </div>
+  </div>
+</div>
+
+<!-- OPENING -->
+<section class="opening">
+  <div class="opening-left">
+    <div>
+      <p class="ol-eyebrow">Coffee Theatre · Neihu Taipei</p>
+      <h1 class="ol-title">
+        好咖啡<br>
+        不需要<br>
+        解釋<span class="accent">。</span>
+      </h1>
+    </div>
+    <div class="ol-bottom">
+      <p class="ol-desc">
+        每支豆子都有完整的規格，<br>
+        也有一句話告訴你<strong>它適合什麼感覺</strong>。
+      </p>
+      <div class="ol-actions">
+        <a href="https://theatre.1shop.tw/coffee" class="btn btn-ink">看今季豆款</a>
+        <a href="/guide-dark.html" class="btn btn-outline">不確定從哪裡開始？</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="opening-right">
+    <div class="beans-bar">
+      <span class="beans-bar-label">本季在烘</span>
+      <a href="https://theatre.1shop.tw/coffee" class="beans-bar-link">全部豆款 →</a>
+    </div>
+
+    <!-- column headers: expert track visible on desktop -->
+    <div class="beans-cols-header">
+      <span class="bch"></span>
+      <span class="bch">豆款 · 規格 · 感覺</span>
+      <span class="bch" style="text-align:center">焙度</span>
+      <span class="bch bch-right">價格</span>
+    </div>
+
+    <a href="https://theatre.1shop.tw/coffee" class="bean-row">
+      <span class="b-num">01</span>
+      <div class="b-info">
+        <span class="b-name">百香圓舞曲</span>
+        <span class="b-spec">Ethiopia Yirgacheffe · Natural · G1</span>
+        <span class="b-feel">清晨或下午 · 喝完清醒，不焦躁</span>
+      </div>
+      <span class="b-roast roast-light">淺焙</span>
+      <div class="b-right-col">
+        <span class="b-price">NT$750</span>
+        <span class="b-new">New</span>
+        <span class="b-arrow">→</span>
+      </div>
+    </a>
+
+    <a href="https://theatre.1shop.tw/coffee" class="bean-row">
+      <span class="b-num">02</span>
+      <div class="b-info">
+        <span class="b-name">葡萄蜜糖</span>
+        <span class="b-spec">Rwanda Gatezi · Anaerobic Natural · AA</span>
+        <span class="b-feel">想喝點不一樣的 · 發酵甜，有個性但不過</span>
+      </div>
+      <span class="b-roast roast-light">淺焙</span>
+      <div class="b-right-col">
+        <span class="b-price">NT$750</span>
+        <span class="b-arrow">→</span>
+      </div>
+    </a>
+
+    <a href="https://theatre.1shop.tw/coffee" class="bean-row">
+      <span class="b-num">03</span>
+      <div class="b-info">
+        <span class="b-name">綠寶石</span>
+        <span class="b-spec">Indonesia Mandheling · Wet-hulled · G1</span>
+        <span class="b-feel">下午工作 · 厚實，不酸，加奶也好</span>
+      </div>
+      <span class="b-roast roast-medium">中焙</span>
+      <div class="b-right-col">
+        <span class="b-price">NT$450</span>
+        <span class="b-arrow">→</span>
+      </div>
+    </a>
+
+    <a href="https://theatre.1shop.tw/coffee" class="bean-row">
+      <span class="b-num">04</span>
+      <div class="b-info">
+        <span class="b-name">花神</span>
+        <span class="b-spec">Guatemala Antigua · Washed · SHB</span>
+        <span class="b-feel">日常首選 · 平衡，不挑場合，不挑人</span>
+      </div>
+      <span class="b-roast roast-medium">中焙</span>
+      <div class="b-right-col">
+        <span class="b-price">NT$400</span>
+        <span class="b-arrow">→</span>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- THREE PATHS -->
+<section class="paths">
+  <div class="path">
+    <div>
+      <p class="path-label">來店</p>
+      <h2 class="path-title">坐下來，慢慢喝一杯。</h2>
+    </div>
+    <p class="path-body">台北內湖，週二到週日。每一杯都是當季烘焙的即時狀態。</p>
+    <a href="https://theatre.1shop.tw/location" class="btn btn-outline">門市資訊</a>
+  </div>
+
+  <div class="path path-subscribe" id="subscribe">
+    <div>
+      <p class="path-label">每月選豆</p>
+      <h2 class="path-title">決定一次。每個月，它就出現了。</h2>
+    </div>
+    <p class="path-body">告訴我你喜歡的風味方向，我每月烘好主動通知你取豆。兩包起，隨時可以暫停。</p>
+    <a href="/subscribe-f.html" class="btn-white">訂閱</a>
+  </div>
+
+  <div class="path">
+    <div>
+      <p class="path-label">選豆指南</p>
+      <h2 class="path-title">告訴我你喜歡什麼感覺。</h2>
+    </div>
+    <p class="path-body">三個問題，找到這季最適合你的那支。不需要懂產地或處理法。</p>
+    <a href="/guide-dark.html" class="btn btn-outline">開始</a>
+  </div>
+</section>
+
+<!-- THE BRIEF -->
+<section class="brief">
+  <div class="brief-header">
+    <span class="brief-eyebrow">The Brief</span>
+    <h2 class="brief-headline">關於咖啡，幾件值得知道的事。</h2>
+  </div>
+  <div class="brief-grid">
+
+    <div class="brief-card">
+      <p class="bc-topic">關於處理法</p>
+      <p class="bc-title">日曬、水洗、蜜處理——不是名詞，是風味的成因。</p>
+      <div class="bc-rule"></div>
+      <p class="bc-body">
+        咖啡的果肉怎麼去掉，直接影響你喝到的味道方向。
+        水洗通常乾淨、清透、果酸明亮；日曬保留果肉發酵，
+        甜感更豐富，有時帶酒香；蜜處理介於兩者之間。
+        <strong>這不是風格偏好，是風味的來源。</strong>
+        知道這件事，你就能從描述裡讀出這支豆子大概是什麼方向。
+      </p>
+    </div>
+
+    <div class="brief-card">
+      <p class="bc-topic">關於焙度</p>
+      <p class="bc-title">焙度決定誰說話——是豆子，還是火候。</p>
+      <div class="bc-rule"></div>
+      <p class="bc-body">
+        淺焙讓豆子的原始個性說話：產地風土、品種特色、處理法帶來的細節；
+        深焙讓烘焙的判斷成為主角：厚實、穩定、苦甜平衡。
+        <strong>這是兩種不同的美學，不是高下之分。</strong>
+        音響行家選喇叭，有人要的是還原，有人要的是染色——咖啡的焙度邏輯一樣。
+      </p>
+    </div>
+
+    <div class="brief-card">
+      <p class="bc-topic">關於產地</p>
+      <p class="bc-title">產地是線索，不是保證。</p>
+      <div class="bc-rule"></div>
+      <p class="bc-body">
+        衣索比亞通常花香、果酸；印尼通常厚實、低酸；
+        中美洲通常平衡、甜感好——這些是統計上的傾向，不是規律。
+        <strong>真正決定你杯子裡味道的，是這支豆子的具體品質和烘焙的判斷。</strong>
+        產地是開始閱讀一支豆子的方式，不是結論。
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- CODA -->
+<section class="coda">
+  <span class="coda-label">關於我們</span>
+  <p class="coda-text">
+    內湖<span class="accent">，</span>一個人<span class="accent">，</span><br>
+    從生豆到你手上<span class="accent">。</span>
+  </p>
+</section>
+
+<footer>
+  <span class="footer-logo">咖啡小劇場 · Coffee Theatre</span>
+  <ul class="footer-links">
+    <li><a href="https://www.instagram.com/cafetheatre.tw">Instagram</a></li>
+    <li><a href="https://portaly.cc/theatre">Portaly</a></li>
+    <li><a href="https://theatre.1shop.tw/QA">FAQ</a></li>
+  </ul>
+  <span class="footer-loc">台北內湖 · 週二至週日</span>
+</footer>
+
+</body>
+</html>
